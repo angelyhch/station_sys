@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1">
+
+    <title>{% block title %} {% endblock title %}</title>
+
+    <link rel="stylesheet" href="{% static 'bootstrap-4.6/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons/bootstrap-icons.css' %}">
+
+<!--    cdn 方式，后续改为本地方式-->
+    <link rel="stylesheet" href="{% static 'bootstrap-table-1.18.3/dist/bootstrap-table.min.css' %}">
+
+</head>
+<body>
+
+
+{% include 'header.html' %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2">
+            {% include 'sidebar.html' %}
+        </div>
+
+        <div class="col-10">
+            {% block content %}
+            content
+
+            {% endblock content %}
+        </div>
+
+    </div>
+</div>
+
+{% include 'footer.html' %}
+
+{% block scripts %}
+<script src="{% static 'jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'bootstrap-4.6/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'bootstrap-4.6/js/bootstrap.min.js' %}"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="{% static 'bootstrap-table-1.18.3/dist/bootstrap-table.min.js' %}"></script>
+<!-- Latest compiled and minified Locales -->
+<script src="{% static 'bootstrap-table-1.18.3/dist/locale/bootstrap-table-zh-CN.min.js' %}"></script>
+{% endblock scripts %}
+
+</body>
+</html>
