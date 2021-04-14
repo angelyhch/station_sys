@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'craft',
+    # 'craft', #todo: 用下一行替换，实现app级别的配置在项目中可以调用, 通过 apps.get_app_config('craft').name 调用name内容。
+    'craft.apps.CraftConfig',
 
 ]
 
@@ -66,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'craft.utils.set_craft_global',
             ],
         },
     },
@@ -134,3 +136,4 @@ DATABASE_STATION = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db3_station.sqlite3',
 }
+

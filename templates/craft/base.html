@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+<h4>表格清单</h4>
+<ul>
+    {% for table in table_list_display %}
+    <li><a href="{% url 'craft:table_display' table %}">{{ table }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock sidebar %}

@@ -17,13 +17,16 @@
 </head>
 <body>
 
-
-{% include 'header.html' %}
+{% block header %}
+    {% include 'header.html' %}
+{% endblock header %}
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-2">
-            {% include 'sidebar.html' %}
+            {% block sidebar %}
+                {% include 'sidebar.html' %}
+            {% endblock sidebar %}
         </div>
 
         <div class="col-10">
@@ -36,7 +39,9 @@
     </div>
 </div>
 
-{% include 'footer.html' %}
+{% block footer %}
+    {% include 'footer.html' %}
+{% endblock footer %}
 
 {% block scripts %}
 <script src="{% static 'jquery/jquery-3.6.0.min.js' %}"></script>

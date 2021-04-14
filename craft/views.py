@@ -1,16 +1,35 @@
 from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
-import pandas as pd
-from .utils import ConnectSqlite
+from craft.utils import ConnectSqlite
+from .utils import suffix_view
 
 #todo: 下面这条语句不能放在这里，否则会导致sqlite 线程错误
 # db_station = ConnectSqlite()
 
 
-def home(request):
+def home(request, parameter='default'):
     pass
-    return HttpResponse('home')
+    return HttpResponse(f'home- {parameter}')
+
+
+def table_display(request, table_name='station'):
+    table_view_name = suffix_view(table_name)
+    db_station = ConnectSqlite()
+    df = db_station.read_table(table_view_name)
+    header_list = df.columns.tolist()
+    body_data = df.values.tolist()
+
+    df_table_list = db_station.read_table('table_list')
+    table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
+
+    return render(request, 'craft/table_display.html',
+                  {
+                      'header_list': header_list,
+                      'body_data': body_data,
+                      'table_name_mingcheng': table_name_mingcheng
+                  })
+
 
 
 def temp3(request):

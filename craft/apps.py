@@ -1,6 +1,8 @@
+# app 级别程序配置
+
 from django.apps import AppConfig
 
 
 class CraftConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
     name = 'craft'
+    version = 0.1

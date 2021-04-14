@@ -156,6 +156,34 @@ class ConnectSqlite:
             return False
 
 
+def set_craft_global(request):
+    '''
+    设定 craft app 应用级别的全局变量，在settings的 templates 配置 context—processes中注册该函数
+    :param request:
+    :return:
+    '''
+    db = ConnectSqlite()
+    table_list_df = db.read_table('table_list')
+    table_list_display = table_list_df[table_list_df['is_display'] == 1]['name'].to_list()
+
+    craft_global = {
+        'table_list_display': table_list_display,
+    }
+
+    return craft_global
+
+
+def suffix_view(table_name):
+    '''
+    add suffix 'view' end with table_name.
+    在table_name后面增加 view 后缀名，用于调用数据库中view表格，实现原始数据与应用数据的解耦
+    :param table_name:
+    :return:
+    '''
+
+    return table_name + '_view'
+
+
 # db_station = ConnectSqlite()
 if __name__ == '__main__':
     db = ConnectSqlite()
