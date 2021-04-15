@@ -12,8 +12,30 @@ def home(request, parameter='default'):
     pass
     return HttpResponse(f'home- {parameter}')
 
+def stations(request):
+    '''
+    显示工位清单目录以及汇总信息
+    :param request:
+    :return:
+    '''
+    pass
+    db_station = ConnectSqlite()
+    df_station = db_station.read_table('station')
+    df_station_weight = db_station.read_table('view_station_weight')
+
+    return render(request, 'craft/stations.html',
+                  {
+                      'df_station': df_station,
+                      'df_station_weight': df_station_weight
+                  })
 
 def table_display(request, table_name='station'):
+    '''
+    展示各个表格的内容
+    :param request:
+    :param table_name:
+    :return:
+    '''
     table_view_name = suffix_view(table_name)
     db_station = ConnectSqlite()
     df = db_station.read_table(table_view_name)

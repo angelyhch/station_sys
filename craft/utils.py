@@ -45,7 +45,7 @@ class ConnectSqlite:
         # 读取EXCEL数据
         df1 = pd.read_excel(excel_path, header=header, index_col=index_col)
         # EXCEL数据写入数据库
-        df1.to_sql(to_table_name, self._conn,  if_exists='replace')  # todo: 以后要和三坐标分析拆分数据库或者拆表
+        df1.to_sql(to_table_name, self._conn,  if_exists='replace')
 
     def close_con(self):
         '''

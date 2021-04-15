@@ -1,0 +1,42 @@
+{% extends 'craft/base.html' %}
+
+{% block title %}
+stations home
+{% endblock title %}
+
+{% block content %}
+<h2>工位清单</h2>
+
+<table data-search="true" data-show-columns="true" data-toggle="table">
+    <thead>
+    <tr>
+        {% for col in df_station_weight.columns %}
+        <th>{{ col }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    {{ df_station_weight.iloc[2,3] }}
+    <tbody>
+    <tr>
+    </tr>
+    </tbody>
+
+</table>
+
+{% endblock content %}
+
+
+{% block scripts %}
+    {{ block.super }}
+
+<script>
+    $(function(){
+        $('table').attr('data-toggle','table');
+        $('table').attr('data-search', 'true');
+
+
+    })
+
+</script>
+
+{% endblock scripts %}
