@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 # Create your views here.
 from django.http import HttpResponse
 from craft.utils import ConnectSqlite
@@ -12,6 +12,35 @@ def home(request, parameter='default'):
     pass
     return HttpResponse(f'home- {parameter}')
 
+
+def station_info(request, station='W1FF4-010'):
+    '''
+    显示工位信息明细
+    :return:
+    '''
+    station_upper = station.upper()
+    db_station = ConnectSqlite()
+    table_list_df = db_station.read_table('table_list')
+    table_instation_list = table_list_df[table_list_df['is_instation'] == 1]['name'].to_list()
+
+    station_dict = {}
+    for xiangmu in table_instation_list:
+        table_df = db_station.read_table(xiangmu)
+        xiangmu_st_df = table_df[table_df['station'] == station_upper]
+        station_dict[xiangmu] = xiangmu_st_df
+
+
+    table_instation_list.sort(key=lambda x: station_dict[x].shape[0], reverse=True)
+    return render(request, 'craft/station_info.html',
+                  {
+                      'table_instation_list': table_instation_list,
+                      'station_dict': station_dict,
+                  })
+
+
+
+
+
 def stations(request):
     '''
     显示工位清单目录以及汇总信息
@@ -23,11 +52,13 @@ def stations(request):
     df_station = db_station.read_table('station')
     df_station_weight = db_station.read_table('view_station_weight')
 
+
     return render(request, 'craft/stations.html',
                   {
                       'df_station': df_station,
-                      'df_station_weight': df_station_weight
+                      'df_station_weight': df_station_weight,
                   })
+
 
 def table_display(request, table_name='station'):
     '''

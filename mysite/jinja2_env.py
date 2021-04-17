@@ -3,6 +3,10 @@ from django.urls import reverse
 
 from jinja2 import Environment
 
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+from craft.utils import set_craft_global
+
 
 def environment(**options):
     env = Environment(**options)
@@ -10,4 +14,5 @@ def environment(**options):
         'static': staticfiles_storage.url,
         'url': reverse,
     })
+    env.globals.update(set_craft_global())
     return env

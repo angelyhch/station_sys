@@ -6,28 +6,40 @@ stations home
 
 {% block content %}
 <h2>工位清单</h2>
-
-<table data-search="true" data-show-columns="true" data-toggle="table">
-    <thead>
+<table data-search="true" data-show-columns="true" data-toggle="table"
+       data-show-pagination-switch="true"
+       class="text-center table-striped table-sm table table-bordered"
+>
+    {% with stw_with = df_station_weight.set_index('station')  %}
+    <thead class="thead-dark">
     <tr>
-        {% for col in df_station_weight.columns %}
+        <th>station</th>
+        <th>工位名</th>
+        {% for col in stw_with.columns%}
         <th>{{ col }}</th>
         {% endfor %}
     </tr>
     </thead>
-    {{ df_station_weight.iloc[2,3] }}
     <tbody>
+    {% for station in craft_station_list %}
     <tr>
+        <td>{{ station }}</td>
+        <td><a href="{{ url('craft:station_info',kwargs={'station': station}) }}">{{ station_name_dict[station] }}</a></td>
+        {% for item in stw_with.columns %}
+        <td style="{{ 'background-color:yellow; font-weight:bold' if  stw_with.loc[station,item] !=0 else '' }}">{{ stw_with.loc[station, item] }}</td>
+        {% endfor %}
     </tr>
+    {% endfor %}
     </tbody>
 
+    {% endwith %}
 </table>
 
 {% endblock content %}
 
 
 {% block scripts %}
-    {{ block.super }}
+    {{ super() }}
 
 <script>
     $(function(){
