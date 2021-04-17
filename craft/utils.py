@@ -45,7 +45,7 @@ class ConnectSqlite:
         # 读取EXCEL数据
         df1 = pd.read_excel(excel_path, header=header, index_col=index_col)
         # EXCEL数据写入数据库
-        df1.to_sql(to_table_name, self._conn,  if_exists='replace')  # todo: 以后要和三坐标分析拆分数据库或者拆表
+        df1.to_sql(to_table_name, self._conn,  if_exists='replace')
 
     def close_con(self):
         '''
@@ -156,7 +156,7 @@ class ConnectSqlite:
             return False
 
 
-def set_craft_global(request):
+def set_craft_global():
     '''
     设定 craft app 应用级别的全局变量，在settings的 templates 配置 context—processes中注册该函数
     :param request:
@@ -166,8 +166,14 @@ def set_craft_global(request):
     table_list_df = db.read_table('table_list')
     table_list_display = table_list_df[table_list_df['is_display'] == 1]['name'].to_list()
 
+    station_df = db.read_table('station')
+    station_name_dict = dict(zip(station_df['station'], station_df['工位名称']))
+
+    station_list = db.read_table('station')['station'].to_list()
     craft_global = {
-        'table_list_display': table_list_display,
+        'craft_table_list': table_list_df,
+        'craft_station_list': station_list,
+        'station_name_dict': station_name_dict,
     }
 
     return craft_global

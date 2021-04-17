@@ -3,14 +3,15 @@
         <nav class="navbar navbar-expand-sm bg-gray">
             <div class="col-6">
                 <ul class="nav navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#">nav1</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">nav2</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">nav3</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'pbom'}) }}">Bom</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'controlplan'}) }}">ControlPlan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'station'}) }}">Station</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'table_list'}) }}">settings</a></li>
                 </ul>
             </div>
             <div class="col-6">
                 <ul class="nav navbar-nav pull-right ">
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-house"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:stations') }}"><i class="bi bi-house"></i>Home</a></li>
                 </ul>
 
             </div>
