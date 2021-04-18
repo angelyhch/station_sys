@@ -7,15 +7,20 @@ craft home
 {% block content %}
 <h4><strong>{{ table_name_mingcheng }} </strong>数据展示</h4>
 
-<table   data-toggle="table" data-show-columns="true" data-search="true"
-         data-show-pagination-switch="true"
-         class="table-striped table-sm table table-bordered"
+<table
+        class="layui-table" lay-even  lay-data="{limit:10000, toolbar:true}"
+         lay-filter="demo"
 >
-    <thead class="thead-dark">
+    <thead>
     <tr>
         {% for col in header_list %}
-        <th data-sortable="true">{{ col }}</th>
+        <th lay-data="{field:'{{ col }}', sort:true}">
+            {{ col }}
+        </th>
         {% endfor %}
+        <th lay-data="{field:'test', edit:'text',
+                toolbar:'#barDemo', width:200,
+        }">数据操作</th>
     </tr>
     </thead>
     <tbody>
@@ -24,10 +29,57 @@ craft home
             {% for item in row %}
             <td>{{ item }}</td>
             {% endfor %}
+            <td>testdata</td>
         </tr>
     {% endfor %}
     </tbody>
 
 </table>
-
+{{ csrf_token }}
 {% endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+
+</script>
+
+<script>
+table = layui.table;
+table.on('tool(demo)',function(obj){
+    var data = obj.data;  //当前行数据
+    var layEvent = obj.event;   //获取lay-event 对应的值
+    var tr = obj.tr;    //获取当前行tr的DOM对象
+
+    if (layEvent == 'detail'){
+        layer.msg('click detail');
+    } else if(layEvent == 'delete'){
+        layer.msg('click delete');
+    } else if(layEvent == 'edit'){
+<!--        layer.msg('click edit');-->
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+        $.ajax({
+            url:"{{ url('craft:table_display_edit') }}",
+            data:JSON.stringify(obj),
+            type:'POST',
+
+            success:function(result){
+                layer.msg(result);
+            },
+            fail:function(result){
+                layer.msg('failed');
+            },
+
+        })
+    }
+
+});
+
+</script>
+
+{% endblock scripts %}

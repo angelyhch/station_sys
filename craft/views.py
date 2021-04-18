@@ -3,14 +3,25 @@ from django.shortcuts import render, reverse
 from django.http import HttpResponse
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
+import logging
+logger = logging.getLogger(__name__)
+
 
 #todo: 下面这条语句不能放在这里，否则会导致sqlite 线程错误
 # db_station = ConnectSqlite()
 
 
-def home(request, parameter='default'):
+def home(request):
     pass
-    return HttpResponse(f'home- {parameter}')
+    return render(request, 'craft/home.html')
+
+
+def table_display_edit(request):
+    import json
+    recv_data = json.loads(request.body)
+    row_data = recv_data.get('data')
+    logger.warning(row_data)
+    return HttpResponse(row_data.values())
 
 
 def station_info(request, station='W1FF4-010'):
@@ -52,7 +63,6 @@ def stations(request):
     df_station = db_station.read_table('station')
     df_station_weight = db_station.read_table('view_station_weight')
 
-
     return render(request, 'craft/stations.html',
                   {
                       'df_station': df_station,
@@ -81,57 +91,6 @@ def table_display(request, table_name='station'):
                       'header_list': header_list,
                       'body_data': body_data,
                       'table_name_mingcheng': table_name_mingcheng
-                  })
-
-
-
-def temp3(request):
-    '''
-    html元素形式建立表格
-    :param request:
-    :return:
-    '''
-    db_station = ConnectSqlite()
-    df = db_station.read_table('co2_view')
-    header_list = df.columns.tolist()
-    body_data = df.values.tolist()
-    return render(request, 'craft/temp3.html',
-                  {
-                      'header_list': header_list,
-                      'body_data': body_data
-                  })
-
-
-
-def temp2(request):
-    '''
-    df.to_html() 方式传递数据，暂未找到快捷转换成bootstrap-table的方式
-    :param request:
-    :return:
-    '''
-    db_station = ConnectSqlite()
-    df = db_station.read_table('co2_view')
-    df_html = df.to_html()
-    return render(request, 'craft/temp2.html',
-                  {
-                      'df_data': df_html
-                  })
-
-
-def temp1(request):
-    '''
-    Json 方式传递数据， #todo:生成和解析json文件时会出现报错
-    :param request:
-    :return:
-    '''
-    db_station = ConnectSqlite()
-    df = db_station.read_table('jig_view')
-    header_list = df.columns.tolist()
-    body_data_list = df.to_json(orient='records')
-    return render(request, 'craft/temp1.html',
-                  {
-                      'header': header_list,
-                      'body_data': body_data_list
                   })
 
 
