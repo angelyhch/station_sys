@@ -35,20 +35,19 @@ craft home
 
 </table>
 
+<hr>
+
+<span class="layui-badge layui-bg-cyan">icon</span>
+<span class="layui-badge layui-bg-blue">icon</span>
+<span class="layui-badge layui-bg-green">icon</span>
+<span class="layui-badge-dot layui-bg-green"></span>
+<br>
+
+<i class="layui-icon layui-icon-face-smile"></i>
+<i class="layui-icon layui-icon-windows"></i>
+<br>
+
+<a href="#" class="layui-btn">一个可跳转的按钮</a>
+<a href="#" class="layui-btn layui-btn-primary layui-border-red">border green</a>
+
 {% endblock content %}
-
-
-{% block scripts %}
-    {{ block.super }}
-
-<script>
-    $(function(){
-        $('table').attr('data-toggle','table');
-        $('table').attr('data-search', 'true');
-
-
-    })
-
-</script>
-
-{% endblock scripts %}

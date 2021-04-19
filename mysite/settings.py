@@ -39,12 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     # 'craft', #todo: 用下一行替换，实现app级别的配置在项目中可以调用, 通过 apps.get_app_config('craft').name 调用name内容。
     'craft.apps.CraftConfig',
 
 ]
 
 MIDDLEWARE = [
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -147,3 +150,5 @@ DATABASE_STATION = {
         'NAME': BASE_DIR / 'db3_station.sqlite3',
 }
 
+# debug_toolbar 用
+INTERNAL_IPS = ['127.0.0.1']
