@@ -5,6 +5,7 @@ from . import views
 app_name = 'craft'
 
 urlpatterns = [
+    path('table_display_insert/', views.table_display_insert, name='table_display_insert'),
     path('table_display_edit/', views.table_display_edit, name='table_display_edit'),
     path('station_info/<str:station>', views.station_info, name='station_info'),
     path('stations/', views.stations, name='stations'),

@@ -8,71 +8,99 @@ craft home
 <h4><strong>{{ table_name_mingcheng }} </strong>数据展示</h4>
 
 <table
-        class="layui-table" lay-even  lay-data="{limit:10000, toolbar:true}"
-         lay-filter="demo"
+        class="layui-table" lay-even  lay-data="{id:'tableId', limit:10000, toolbar:true, cellMinWidth:110,}"
+         lay-filter="demo",
 >
     <thead>
     <tr>
+        <th lay-data="{field:'operate', edit:'text',
+                toolbar:'#barDemo', width:120, fixed:'left',
+        }">数据操作</th>
         {% for col in header_list %}
-        <th lay-data="{field:'{{ col }}', sort:true}">
+        <th lay-data="{ field:'{{ col }}', sort:true
+        {% if col != 'index' %}
+            ,edit:'text'
+        {% endif %}
+        }">
             {{ col }}
         </th>
         {% endfor %}
-        <th lay-data="{field:'test', edit:'text',
-                toolbar:'#barDemo', width:200,
-        }">数据操作</th>
     </tr>
     </thead>
     <tbody>
     {% for row in body_data %}
         <tr>
+            <td></td>
             {% for item in row %}
             <td>{{ item }}</td>
             {% endfor %}
-            <td>testdata</td>
         </tr>
     {% endfor %}
     </tbody>
 
 </table>
-{{ csrf_token }}
 {% endblock content %}
 
 
 {% block scripts %}
 {{ super() }}
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="insert">新增</a>
+<!--    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>-->
+    <a class="layui-btn layui-btn-xs" lay-event="edit">更新</a>
 
 </script>
 
 <script>
 table = layui.table;
 table.on('tool(demo)',function(obj){
-    var data = obj.data;  //当前行数据
+    var data0 = obj.data;  //当前行全部数据
+    data1 = new Object;     //当前行表格数据
+    {% for key in header_list %}
+        data1['{{key}}'] = data0['{{key}}'];
+    {% endfor %}
+
+    table_name = '{{ table_name }}';    //把当前表名称传过去
+
+    data = new Object;
+    data['row_data'] = data1;
+    data['table_name'] = table_name;
+
     var layEvent = obj.event;   //获取lay-event 对应的值
     var tr = obj.tr;    //获取当前行tr的DOM对象
 
-    if (layEvent == 'detail'){
-        layer.msg('click detail');
-    } else if(layEvent == 'delete'){
-        layer.msg('click delete');
-    } else if(layEvent == 'edit'){
-<!--        layer.msg('click edit');-->
-
-        var token = $('input[name=csrfmiddlewaretoken]').val();
+    if (layEvent == 'insert'){
+        layer.msg('click insert');
         $.ajax({
-            url:"{{ url('craft:table_display_edit') }}",
-            data:JSON.stringify(obj),
+            url:"{{ url('craft:table_display_insert') }}",
+            data:JSON.stringify(data),
             type:'POST',
 
             success:function(result){
-                layer.msg(result);
+                location.reload();
+                layer.msg(result, {time: 3000});
             },
             fail:function(result){
-                layer.msg('failed');
+                layer.msg('failed', {time: 3000});
+            },
+
+        })
+
+    } else if(layEvent == 'delete'){
+        layer.msg('click delete');
+    } else if(layEvent == 'edit'){
+
+        $.ajax({
+            url:"{{ url('craft:table_display_edit') }}",
+            data:JSON.stringify(data),
+            type:'POST',
+
+            success:function(result){
+                location.reload();
+                layer.msg(result, {time: 3000});
+            },
+            fail:function(result){
+                layer.msg('failed', {time: 3000});
             },
 
         })

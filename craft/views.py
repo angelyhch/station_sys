@@ -4,8 +4,14 @@ from django.http import HttpResponse
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
+sh = logging.StreamHandler()
+logger.setLevel(logging.DEBUG)
+FORMAT = '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
+formatter = logging.Formatter(FORMAT)
+sh.setFormatter(formatter)
 
+logger.addHandler(sh)
 
 #todo: 下面这条语句不能放在这里，否则会导致sqlite 线程错误
 # db_station = ConnectSqlite()
@@ -16,12 +22,27 @@ def home(request):
     return render(request, 'craft/home.html')
 
 
+def table_display_insert(request):
+    import json
+    recv_data = json.loads(request.body)
+    row_data = recv_data['row_data']
+    table_name = recv_data['table_name']
+    db_station = ConnectSqlite()
+    sql = ConnectSqlite.build_sql(table_name, row_data, operate='insert')
+    db_station.insert_update_table(sql)
+    logger.info(sql)
+    return HttpResponse(str(recv_data))
+
 def table_display_edit(request):
     import json
     recv_data = json.loads(request.body)
-    row_data = recv_data.get('data')
-    logger.warning(row_data)
-    return HttpResponse(row_data.values())
+    row_data = recv_data['row_data']
+    table_name = recv_data['table_name']
+    db_station = ConnectSqlite()
+    sql = ConnectSqlite.build_sql(table_name, row_data, operate='update')
+    db_station.insert_update_table(sql)
+    logger.info(sql)
+    return HttpResponse(str(recv_data))
 
 
 def station_info(request, station='W1FF4-010'):
@@ -90,6 +111,7 @@ def table_display(request, table_name='station'):
                   {
                       'header_list': header_list,
                       'body_data': body_data,
+                      'table_name': table_name,
                       'table_name_mingcheng': table_name_mingcheng
                   })
 
