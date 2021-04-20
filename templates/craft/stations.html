@@ -24,7 +24,7 @@ stations home
     {% for station in craft_station_list %}
     <tr>
         <td>{{ station }}</td>
-        <td><a href="{{ url('craft:station_info',kwargs={'station': station}) }}">{{ station_name_dict[station] }}</a></td>
+        <td><a  style="color:blue" href="{{ url('craft:station_info',kwargs={'station': station}) }}">{{ station_name_dict[station] }}</a></td>
         {% for item in stw_with.columns %}
         <td style="{{ 'background-color:yellow; font-weight:bold' if  stw_with.loc[station,item] !=0 else '' }}">{{ stw_with.loc[station, item] }}</td>
         {% endfor %}

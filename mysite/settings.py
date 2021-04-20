@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     # 'craft', #todo: 用下一行替换，实现app级别的配置在项目中可以调用, 通过 apps.get_app_config('craft').name 调用name内容。
     'craft.apps.CraftConfig',
+    'account',
 
 ]
 
@@ -80,7 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'craft.utils.set_craft_global',
+                # 'craft.utils.set_craft_global',   #原生Django模板的全局变量注册,已经被jinja2代替
             ],
         },
     },
@@ -152,3 +153,7 @@ DATABASE_STATION = {
 
 # debug_toolbar 用
 INTERNAL_IPS = ['127.0.0.1']
+
+LOGIN_REDIRECT_URL = '/craft/stations'
+
+LOGIN_URL = '/account/login/'
