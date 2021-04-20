@@ -61,12 +61,13 @@ def station_info(request, station='W1FF4-010'):
         xiangmu_st_df = table_df[table_df['station'] == station_upper]
         station_dict[xiangmu] = xiangmu_st_df
 
-
+    controlplan_df = db_station.read_table('controlplan')
     table_instation_list.sort(key=lambda x: station_dict[x].shape[0], reverse=True)
     return render(request, 'craft/station_info.html',
                   {
                       'table_instation_list': table_instation_list,
                       'station_dict': station_dict,
+                      'controlplan_df': controlplan_df,
                   })
 
 

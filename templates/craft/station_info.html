@@ -10,6 +10,8 @@ station info
 
 
 <h2>工位明细</h2>
+{% with %}
+{% set craft_list=craft_table_list[craft_table_list['is_craft'] == 1]['name'].to_list() %}
 <table data-search="true" data-show-columns="true" data-toggle="table"
        data-show-pagination-switch="true"
        class="text-center table-striped table-sm table table-bordered"
@@ -27,19 +29,22 @@ station info
     <tbody>
         {% for xiangmu in table_instation_list %}
         <tr>
-            {% with craft_list=craft_table_list[craft_table_list['is_craft'] == 1]['name'].to_list() %}
             <td>{{ xiangmu }}
                 {% if xiangmu in craft_list %}
                 <br>
                 <a href="{{ url('craft:table_display',kwargs={'table_name':'controlplan'}) }}"><bi class="bi bi-file-earmark-word"></bi>控制计划</a>
                 {% endif %}
             </td>
-            {% endwith %}
             <td>{{ craft_table_list[craft_table_list['name'] == xiangmu]['mingcheng'].values[0] }}</td>
             <td>{{ station_dict[xiangmu].shape[0] }}</td>
 
             <td>
                 {{ station_dict[xiangmu].to_html() | safe }}
+                {% if xiangmu in craft_list %}
+                <br>
+                <h3 class="text-left">控制计划要求</h3>
+                {{ controlplan_df[controlplan_df['process']==xiangmu].to_html() | safe }}
+                {% endif %}
             </td>
 
         </tr>
@@ -47,5 +52,6 @@ station info
     </tbody>
 
 </table>
+{% endwith %}
 
 {% endblock content %}
