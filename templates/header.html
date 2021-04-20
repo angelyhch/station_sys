@@ -13,11 +13,29 @@
             <div class="col-6">
                 <ul class="nav navbar-nav navbar-right" style="margin-right:10px">
                     {% if request.user.is_authenticated %}
-                    <li class="nav-item btn"><a href="#">{{ request.user.username }}</a></li>
-                    <li class="nav-item btn"><a href="{{ url('account:user_logout') }}">Logout</a></li>
+<!--                    <li class="nav-item btn"><a href="#">{{ request.user.username }}</a></li>-->
+                    <li>
+                        <div class="dropdown" style="margin-top:10px">
+                            <button class="btn btn-info dropdown-toggle" type="button"
+                            id="dropdownMenu" data-toggle="dropdown">
+                               <i class="bi bi-person"></i> {{ request.user.username }}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li class="btn">
+                                    <a href="{{ url('account:password_change') }}">修改密码</a>
+                                </li>
+
+                                <li class="btn"><a href="{{ url('account:user_logout') }}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+
 
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url('account:user_login') }}"><i class="bi bi-person-plus"></i>Login</a></li>
+                    <li class="nav-item"><a class="btn btn-info" href="{{ url('account:user_login') }}"><i class="bi bi-person-plus"></i> Login</a></li>
 
                     {% endif %}
                 </ul>
