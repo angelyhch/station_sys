@@ -107,7 +107,12 @@ def table_display(request, table_name='station'):
     df_table_list = db_station.read_table('table_list')
     table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
 
-    return render(request, 'craft/table_display.html',
+    if request.user.is_authenticated:
+        template_name = 'craft/table_display_user.html'
+    else:
+        template_name = 'craft/table_display_guest.html'
+
+    return render(request, template_name,
                   {
                       'header_list': header_list,
                       'body_data': body_data,

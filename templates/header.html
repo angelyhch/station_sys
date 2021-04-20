@@ -3,21 +3,27 @@
         <nav class="navbar navbar-expand-sm bg-gray">
             <div class="col-6">
                 <ul class="nav navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'pbom'}) }}">Bom</a></li>
+<!--                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'pbom'}) }}">Bom</a></li>-->
+                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:stations') }}"><i class="bi bi-house"></i>Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'controlplan'}) }}">ControlPlan</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'station'}) }}">Station</a></li>
 <!--                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:table_display', kwargs={'table_name':'table_list'}) }}">settings</a></li>-->
                 </ul>
             </div>
             <div class="col-6">
-                <ul class="nav navbar-nav pull-right ">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('craft:stations') }}"><i class="bi bi-house"></i>Home</a></li>
+                <ul class="nav navbar-nav navbar-right" style="margin-right:10px">
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item btn"><a href="#">{{ request.user.username }}</a></li>
+                    <li class="nav-item btn"><a href="{{ url('account:user_logout') }}">Logout</a></li>
+
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url('account:user_login') }}"><i class="bi bi-person-plus"></i>Login</a></li>
+
+                    {% endif %}
                 </ul>
 
             </div>
-
     </nav>
-
 </div>
     <hr>
 </div>
