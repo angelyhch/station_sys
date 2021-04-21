@@ -1,6 +1,7 @@
 from django.shortcuts import render, reverse
 # Create your views here.
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
 import logging
@@ -123,12 +124,7 @@ def table_display(request, table_name='station'):
     df_table_list = db_station.read_table('table_list')
     table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
 
-    if request.user.is_authenticated:
-        template_name = 'craft/table_display_user.html'
-    else:
-        template_name = 'craft/table_display_guest.html'
-
-    return render(request, template_name,
+    return render(request, 'craft/table_display_guest.html',
                   {
                       'header_list': header_list,
                       'body_data': body_data,
@@ -136,4 +132,30 @@ def table_display(request, table_name='station'):
                       'table_name_mingcheng': table_name_mingcheng
                   })
 
+
+@login_required
+def table_display_user(request, table_name='station'):
+    '''
+    进入后台编辑模式
+    :param request:
+    :param table_name:
+    :return:
+    '''
+
+    table_view_name = suffix_view(table_name)
+    db_station = ConnectSqlite()
+    df = db_station.read_table(table_view_name)
+    header_list = df.columns.tolist()
+    body_data = df.values.tolist()
+
+    df_table_list = db_station.read_table('table_list')
+    table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
+
+    return render(request, 'craft/table_display_user.html',
+                  {
+                      'header_list': header_list,
+                      'body_data': body_data,
+                      'table_name': table_name,
+                      'table_name_mingcheng': table_name_mingcheng
+                  })
 
