@@ -12,7 +12,7 @@ station info
 <h2>工位明细</h2>
 {% with %}
 {% set craft_list=craft_table_list[craft_table_list['is_craft'] == 1]['name'].to_list() %}
-<table data-search="true" data-show-columns="true" data-toggle="table"
+<table  data-search="true" data-show-columns="true" data-toggle="table"
        data-show-pagination-switch="true"
        class="text-center table-striped table-sm table table-bordered"
 >
@@ -26,7 +26,7 @@ station info
     </tr>
     </thead>
 
-    <tbody>
+    <tbody id="main_tbody">
         {% for xiangmu in table_instation_list %}
         <tr>
             <td>{{ xiangmu }}
@@ -55,3 +55,37 @@ station info
 {% endwith %}
 
 {% endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+<!--定位零件号的单元格-->
+$(document).ready(function(){
+    part_table = $("#main_tbody>tr").filter(":contains(part)").children().find('tbody');
+    pattern = /^[A|Q|9][\w|\d]{7,9}/gi;
+    part_tds = part_table.find('td').filter(function(){
+            return pattern.test(this.innerText)
+        });
+
+    part_tds.each(function(index, obj){
+        $(obj).css('background-color', 'yellow');
+        var icon = "<i class='bi bi-hand-index-thumb'> </i>";
+        $(obj).prepend(icon);
+    });
+
+    part_tds.each(function(index,obj){
+        lingjianhao = $(obj).text();
+        $(obj).click(function(){
+            location.href =location.origin + '/craft/part_info/'+lingjianhao;
+            });
+        });
+
+
+
+
+    }); //总尾部括弧
+</script>
+
+{% endblock scripts %}

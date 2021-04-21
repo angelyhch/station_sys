@@ -22,6 +22,21 @@ def home(request):
     return render(request, 'craft/home.html')
 
 
+def part_info(request, lingjianhao):
+    '''
+    显示零件号对应的bom信息
+    :param request:
+    :param lingjianhao:
+    :return:
+    '''
+    db_station = ConnectSqlite()
+    pbom_df = db_station.read_table('pbom')
+    part_info_df = pbom_df[pbom_df['lingjianhao']==lingjianhao]
+
+    return render(request, 'craft/part_info.html',
+                  {'part_info_df':part_info_df}
+                  )
+
 def table_display_insert(request):
     import json
     recv_data = json.loads(request.body)

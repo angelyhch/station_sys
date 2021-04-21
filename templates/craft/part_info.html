@@ -1,0 +1,12 @@
+{% extends 'craft/base.html' %}
+
+{% block title %}
+零件BOM信息
+{% endblock title %}
+
+{% block content %}
+<h2>零件详细信息</h2>
+
+{{ part_info_df.to_html() | safe }}
+
+{% endblock content %}
