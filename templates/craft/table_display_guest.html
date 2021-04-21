@@ -6,6 +6,7 @@ craft home
 
 {% block content %}
 <h4><strong>{{ table_name_mingcheng }} </strong>数据展示</h4>
+<a class="btn btn-info text-right" href="{{ url('craft:table_display_user',kwargs={'table_name':table_name}) }}">登陆编辑</a>
 
 <table   data-toggle="table" data-show-columns="true" data-search="true"
          data-show-pagination-switch="true"
