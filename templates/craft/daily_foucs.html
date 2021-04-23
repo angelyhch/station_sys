@@ -1,36 +1,29 @@
 {% extends 'craft/base.html' %}
 
 {% block title %}
-craft home
+daily foucs
 {% endblock title %}
 
-{% block content %}
-<h4><strong>{{ table_name_mingcheng }} </strong>数据展示</h4>
 
-<table
-        class="layui-table" lay-even  lay-data="{id:'tableId', limit:10000, toolbar:true, cellMinWidth:110,}"
-         lay-filter="demo",
+{% block content %}
+
+<h2><strong>今日关注</strong></h2>
+<a class="btn btn-info text-right" id="daily_foucs_manual_button" onclick="daily_manual()">手动添加关注条目</a>
+
+<table   data-toggle="table" data-show-columns="true" data-search="true"
+         data-show-pagination-switch="true"
+         class="table-striped table-sm table table-bordered"
 >
-    <thead>
+    <thead class="thead-dark">
     <tr>
-        <th lay-data="{field:'operate', edit:'text',
-                toolbar:'#barDemo', width:150, fixed:'left',
-        }">数据操作</th>
         {% for col in header_list %}
-        <th lay-data="{ field:'{{ col }}', sort:true
-        {% if col != 'index' %}
-            ,edit:'text'
-        {% endif %}
-        }">
-            {{ col }}
-        </th>
+        <th data-sortable="true">{{ col }}</th>
         {% endfor %}
     </tr>
     </thead>
     <tbody>
     {% for row in body_data %}
         <tr>
-            <td></td>
             {% for item in row %}
             <td>{{ item }}</td>
             {% endfor %}
@@ -39,21 +32,29 @@ craft home
     </tbody>
 
 </table>
+
+
 {% endblock content %}
+
+
+
+
 
 
 {% block scripts %}
 {{ super() }}
-<script type="text/html" id="barDemo">
-    <small><a class="layui-btn layui-btn-xs" lay-event="insert">新增</a></small>
-    <small><a class="layui-btn layui-btn-xs" lay-event="edit">更新</a></small>
-    <small><a class="layui-btn layui-btn-xs" lay-event="foucs">关注</a></small>
 
-</script>
-
-    <div id="foucs_date_form" style="display:none" class="container">
+<div id="foucs_date_form" style="display:none" class="container">
         <form class="layui-form" method="post" action=".">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注内容</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_manual" name="daily_manual" class="layui-input" placeholder="请输入关注事项">
+                </div>
+
+            </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">关注开始</label>
@@ -93,80 +94,36 @@ craft home
         </form>
     </div>
 
+
 <script>
-var table = layui.table;
-table.on('tool(demo)',function(obj){
-    var data0 = obj.data;  //当前行全部数据
-    var data1 = new Object;     //当前行表格数据
-    {% for key in header_list %}
-        data1['{{key}}'] = data0['{{key}}'];
-    {% endfor %}
 
-    var table_name = '{{ table_name }}';    //把当前表名称传过去
+function daily_manual(){
 
-    data = new Object;
-    data['row_data'] = data1;
-    data['table_name'] = table_name;
-
-    var layEvent = obj.event;   //获取lay-event 对应的值
-    var tr = obj.tr;    //获取当前行tr的DOM对象
-
-    if (layEvent == 'insert'){
-        layer.msg('click insert');
-        $.ajax({
-            url:"{{ url('craft:table_display_insert') }}",
-            data:JSON.stringify(data),
-            type:'POST',
-
-            success:function(result){
-                location.reload();
-                layer.msg(result, {time: 3000});
-            },
-            fail:function(result){
-                layer.msg('failed', {time: 3000});
-            },
-
-        })
-
-    } else if(layEvent == 'edit'){
-
-        $.ajax({
-            url:"{{ url('craft:table_display_edit') }}",
-            data:JSON.stringify(data),
-            type:'POST',
-
-            success:function(result){
-                location.reload();
-                layer.msg(result, {time: 3000});
-            },
-            fail:function(result){
-                layer.msg('failed', {time: 3000});
-            },
-
-        })
-    } else if(layEvent == 'foucs'){
         layer.msg('click foucs');
         var foucs_data = {};
-        foucs_data['context'] = data;
-        foucs_data['table_name'] = "{{ table_name_mingcheng }}";
+        foucs_data['table_name'] = "手动输入";
 
         layer.open({
             type: 1,
-            title: '编辑关注信息',
+            title: '手动添加关注条目',
             btn:['提交关注', '取消'],
             content: $("#foucs_date_form"),
 
             btn1: function(){
+                var foucs_data_daily_manual = $("#input_daily_manual").val();
                 var foucs_data_daily_start = $("#input_daily_start").val();
                 var foucs_data_daily_end = $("#input_daily_end").val();
                 var foucs_data_daily_faburen = $("#input_daily_faburen").val();
                 var foucs_data_daily_station = $("#input_daily_station").val();
                 var foucs_data_daily_line = $("#input_daily_line").val();
+                foucs_data['context'] = foucs_data_daily_manual;
                 foucs_data['daily_start'] = foucs_data_daily_start;
                 foucs_data['daily_end'] = foucs_data_daily_end;
                 foucs_data['daily_faburen'] = foucs_data_daily_faburen;
                 foucs_data['daily_station'] = foucs_data_daily_station;
                 foucs_data['daily_line'] = foucs_data_daily_line;
+
+                foucs_data['table_name'] = '手动输入';
 
                 // btn内部运行ajax
                 $.ajax({
@@ -177,21 +134,18 @@ table.on('tool(demo)',function(obj){
                     success: function(result){
                         layer.close(layer.index);
                         layer.msg('该项目已加入【今日关注】，您可以移步查看', {time: 3000});
+                        location.reload();
                     },
 
                     fail: function(result){
-                        layer.msg('抱歉！添加失败，请再次尝试或联系管理员。')
+                        layer.msg('抱歉！添加失败，请再次尝试或联系管理员。');
                     }
-
-                });
-
-            },
+                })
+            }
         });
 
-    }
-
-});
+}
 
 </script>
-
 {% endblock scripts %}
+

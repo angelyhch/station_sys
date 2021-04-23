@@ -1,0 +1,109 @@
+{% extends 'craft/base.html' %}
+
+{% block title %}
+daily foucs
+{% endblock title %}
+
+
+{% block content %}
+
+<h2><strong>今日关注</strong></h2>
+<a class="btn btn-info text-right" id="daily_foucs_manual_button">手动添加关注条目</a>
+
+<table   data-toggle="table" data-show-columns="true" data-search="true"
+         data-show-pagination-switch="true"
+         class="table-striped table-sm table table-bordered"
+>
+    <thead class="thead-dark">
+    <tr>
+        {% for col in header_list %}
+        <th data-sortable="true">{{ col }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in body_data %}
+        <tr>
+            {% for item in row %}
+            <td>{{ item }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+
+{% endblock content %}
+
+
+
+
+
+
+{% block scripts %}
+{{ super() }}
+
+<div id="foucs_date_form" style="display:none" class="container">
+        <form class="layui-form" method="post" action=".">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_manual" name="daily_manual" class="layui-input" placeholder="请输入关注事项">
+                </div>
+
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注开始</label>
+                <div class="layui-input-block">
+                    <input id="input_daily_start" class="layui-input" type="date" name="daily_start" placeholder="请输入关注时间段的开始日期">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注结束</label>
+                <div class="layui-input-block">
+                    <input id="input_daily_end" type="date" class="layui-input" name="daily_end" placeholder="请输入关注时间段的结束日期">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">发布人</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_faburen" class="layui-input" name="daily_fabufren" placeholder="请输入发布人姓名">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注工位</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属线体</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_line" class="layui-input" name="daily_line" placeholder="请输入所属线体">
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+<script>
+$(document).ready(function(){
+
+    $("#daily_foucs_manual_button").onclick(function(){
+
+    })
+})
+
+
+</script>
+{% endblock scripts %}
+
