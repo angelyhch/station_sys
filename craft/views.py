@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
+import json
 import logging
 logger = logging.getLogger()
 sh = logging.StreamHandler()
@@ -22,6 +23,44 @@ def home(request):
     pass
     return render(request, 'craft/home.html')
 
+def foucs_add(request):
+    '''
+    接收foucs_layer的ajax请求数据，并写入daily_foucs表中
+    :param request:
+    :return:
+    '''
+    recv_data = json.loads(request.body)
+
+    daily_start = recv_data['daily_start']
+    daily_end = recv_data['daily_end']
+    daily_faburen = recv_data['daily_faburen']
+    daily_station = recv_data['daily_station']
+    daily_line = recv_data['daily_line']
+    daily_table_name = recv_data['table_name']
+
+    row_context = recv_data['context']
+
+    row_data = {}
+    row_data['index'] = None
+    row_data['关注开始日'] = daily_start
+    row_data['关注结束日'] = daily_end
+    row_data['发布人'] = daily_faburen
+    row_data['关注工位'] = daily_station
+    row_data['所属线体'] = daily_line
+    row_data['来源表'] = daily_table_name
+    row_data['daily_foucs_content'] = str(row_context['row_data'])
+    table_name = 'daily_foucs'
+    db_station = ConnectSqlite()
+    sql = ConnectSqlite.build_sql(table_name, row_data, operate='insert')
+    db_station.insert_update_table(sql)
+    logger.info(sql)
+
+    pass
+
+    return HttpResponse(str(row_context))
+
+
+
 
 def part_info(request, lingjianhao):
     '''
@@ -39,7 +78,6 @@ def part_info(request, lingjianhao):
                   )
 
 def table_display_insert(request):
-    import json
     recv_data = json.loads(request.body)
     row_data = recv_data['row_data']
     table_name = recv_data['table_name']
@@ -50,7 +88,6 @@ def table_display_insert(request):
     return HttpResponse(str(recv_data))
 
 def table_display_edit(request):
-    import json
     recv_data = json.loads(request.body)
     row_data = recv_data['row_data']
     table_name = recv_data['table_name']

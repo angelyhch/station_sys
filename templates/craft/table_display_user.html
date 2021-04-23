@@ -14,7 +14,7 @@ craft home
     <thead>
     <tr>
         <th lay-data="{field:'operate', edit:'text',
-                toolbar:'#barDemo', width:120, fixed:'left',
+                toolbar:'#barDemo', width:150, fixed:'left',
         }">数据操作</th>
         {% for col in header_list %}
         <th lay-data="{ field:'{{ col }}', sort:true
@@ -45,22 +45,64 @@ craft home
 {% block scripts %}
 {{ super() }}
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="insert">新增</a>
-<!--    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>-->
-    <a class="layui-btn layui-btn-xs" lay-event="edit">更新</a>
+    <small><a class="layui-btn layui-btn-xs" lay-event="insert">新增</a></small>
+    <small><a class="layui-btn layui-btn-xs" lay-event="edit">更新</a></small>
+    <small><a class="layui-btn layui-btn-xs" lay-event="foucs">关注</a></small>
 
 </script>
 
+    <div id="foucs_date_form" style="display:none" class="container">
+        <form class="layui-form" method="post" action=".">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注开始</label>
+                <div class="layui-input-block">
+                    <input id="input_daily_start" class="layui-input" type="date" name="daily_start" placeholder="请输入关注时间段的开始日期">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注结束</label>
+                <div class="layui-input-block">
+                    <input id="input_daily_end" type="date" class="layui-input" name="daily_end" placeholder="请输入关注时间段的结束日期">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">发布人</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_faburen" class="layui-input" name="daily_fabufren" placeholder="请输入发布人姓名">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">关注工位</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属线体</label>
+                <div class="layui-input-block">
+                    <input type="text" id="input_daily_line" class="layui-input" name="daily_line" placeholder="请输入所属线体">
+                </div>
+            </div>
+
+        </form>
+    </div>
+
 <script>
-table = layui.table;
+var table = layui.table;
 table.on('tool(demo)',function(obj){
     var data0 = obj.data;  //当前行全部数据
-    data1 = new Object;     //当前行表格数据
+    var data1 = new Object;     //当前行表格数据
     {% for key in header_list %}
         data1['{{key}}'] = data0['{{key}}'];
     {% endfor %}
 
-    table_name = '{{ table_name }}';    //把当前表名称传过去
+    var table_name = '{{ table_name }}';    //把当前表名称传过去
 
     data = new Object;
     data['row_data'] = data1;
@@ -86,8 +128,6 @@ table.on('tool(demo)',function(obj){
 
         })
 
-    } else if(layEvent == 'delete'){
-        layer.msg('click delete');
     } else if(layEvent == 'edit'){
 
         $.ajax({
@@ -104,6 +144,50 @@ table.on('tool(demo)',function(obj){
             },
 
         })
+    } else if(layEvent == 'foucs'){
+        layer.msg('click foucs');
+        var foucs_data = {};
+        foucs_data['context'] = data;
+        foucs_data['table_name'] = "{{ table_name_mingcheng }}";
+
+        layer.open({
+            type: 1,
+            title: '今日关注时间段添加',
+            btn:['提交关注', '取消'],
+            content: $("#foucs_date_form"),
+
+            btn1: function(){
+                foucs_data_daily_start = $("#input_daily_start").val();
+                foucs_data_daily_end = $("#input_daily_end").val();
+                foucs_data_daily_faburen = $("#input_daily_faburen").val();
+                foucs_data_daily_station = $("#input_daily_station").val();
+                foucs_data_daily_line = $("#input_daily_line").val();
+                foucs_data['daily_start'] = foucs_data_daily_start;
+                foucs_data['daily_end'] = foucs_data_daily_end;
+                foucs_data['daily_faburen'] = foucs_data_daily_faburen;
+                foucs_data['daily_station'] = foucs_data_daily_station;
+                foucs_data['daily_line'] = foucs_data_daily_line;
+
+                // btn内部运行ajax
+                $.ajax({
+                    url:"{{ url('craft:foucs_add') }}",
+                    data: JSON.stringify(foucs_data),
+                    type: 'POST',
+
+                    success: function(result){
+                        layer.close(layer.index);
+                        layer.msg('该项目已加入【今日关注】，您可以移步查看', {time: 3000});
+                    },
+
+                    fail: function(result){
+                        layer.msg('抱歉！添加失败，请再次尝试或联系管理员。')
+                    }
+
+                });
+
+            },
+        });
+
     }
 
 });

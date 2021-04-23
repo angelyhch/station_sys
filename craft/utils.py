@@ -163,9 +163,9 @@ class ConnectSqlite:
 
             cols_in = ''
             values_in = ''
-            for key in data_dict:
+            for (key, value)  in data_dict.items():
                 cols_in += f'{key}, ' if key != 'index' else f' [{key}], '
-                values_in += f"'{key}', " if key != 'index' else f' (select max([index]) from {table_name}) + 1 , '
+                values_in += f'"{value}", ' if key != 'index' else f' (select count([index]) from {table_name}) + 1 , '
             cols_in = right_replace(cols_in, ',', '')
             values_in = right_replace(values_in, ',', '')
             cols = f" ({cols_in}) "
@@ -223,13 +223,13 @@ def set_craft_global():
     :return:
     '''
     db = ConnectSqlite()
-    table_list_df = db.read_table('table_list')
+    table_list_df = db.read_table('table_list_view')
     table_list_display = table_list_df[table_list_df['is_display'] == 1]['name'].to_list()
 
-    station_df = db.read_table('station')
+    station_df = db.read_table('station_view')
     station_name_dict = dict(zip(station_df['station'], station_df['工位名称']))
 
-    station_list = db.read_table('station')['station'].to_list()
+    station_list = station_df['station'].to_list()
     craft_global = {
         'craft_table_list': table_list_df,
         'craft_station_list': station_list,

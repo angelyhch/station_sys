@@ -8,6 +8,7 @@ django = "*"
 ipython = "*"
 pandas = "*"
 jinja2 = "*"
+xlrd = "*"
 
 [dev-packages]
 
