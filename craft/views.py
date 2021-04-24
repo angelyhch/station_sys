@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
 import json
+
 import logging
 logger = logging.getLogger()
 sh = logging.StreamHandler()
@@ -22,6 +23,7 @@ logger.addHandler(sh)
 def home(request):
     pass
     return render(request, 'craft/home.html')
+
 
 
 def daily_foucs(request):
