@@ -9,6 +9,8 @@ ipython = "*"
 pandas = "*"
 jinja2 = "*"
 xlrd = "*"
+schedule = "*"
+django-apscheduler = "*"
 
 [dev-packages]
 

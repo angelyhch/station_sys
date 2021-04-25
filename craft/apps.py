@@ -21,3 +21,5 @@ class CraftConfig(AppConfig):
     # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
     EMAIL_USER_TLS = True
     EMAIL_FROM = '156034398@qq.com'
+    EMAIL_TO = '今日关注接收群组'
+    EMAIL_TO_ADDRESS = ['yuhuachang@baicmotor.com']

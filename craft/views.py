@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
 import json
+from craft.emails import run_apscheduler
 
 import logging
 logger = logging.getLogger()
@@ -218,3 +219,6 @@ def table_display_user(request, table_name='station'):
                       'table_name_mingcheng': table_name_mingcheng
                   })
 
+
+from craft.emails import run_apscheduler
+run_apscheduler()
