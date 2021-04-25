@@ -22,4 +22,17 @@ class CraftConfig(AppConfig):
     EMAIL_USER_TLS = True
     EMAIL_FROM = '156034398@qq.com'
     EMAIL_TO = '今日关注接收群组'
-    EMAIL_TO_ADDRESS = ['yuhuachang@baicmotor.com']
+    EMAIL_TO_ADDRESS = ['yuhuachang@baicmotor.com',
+                        'fanyanling@baicmotor.com',
+                        'wangweiping@baicmotor.com',
+                        'huangxilong@baicmotor.com',
+                        'xieguangjun@baicmotor.com',
+                        'shenxiaolong@baicmotor.com',
+                        'wangkuanding@baicmotor.com',
+                        'huangyongquan@baicmotor.com',
+                        'liangpeng@baicmotor.com',
+                        'zhanglixiang@baicmotor.com',
+                        'shijiancheng@baicmotor.com',
+                        'wangyuhui@baicmotor.com',
+                        'zhouchudong@baicmotor.com',
+                        'chennanrong@baicmotor.com']

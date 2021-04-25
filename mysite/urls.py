@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('craft/', include('craft.urls')),
     path('account/', include('account.urls')),
-    path('', craft_views.stations, name='home'),
+    path('', craft_views.daily_foucs, name='home'),
 
 
 ]
