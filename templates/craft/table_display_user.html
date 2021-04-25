@@ -86,13 +86,28 @@ craft home
             <div class="layui-form-item">
                 <label class="layui-form-label">所属线体</label>
                 <div class="layui-input-block">
-                    <input type="text" id="input_daily_line" class="layui-input" name="daily_line" placeholder="请输入所属线体">
+                    <input type="text" id="input_daily_line" class="layui-input" name="daily_line" placeholder="{{ col }}">
                 </div>
             </div>
 
         </form>
     </div>
 
+    <div id="edit_row_form">
+        <form class="layui-form" method="post" action=".">
+            {% for col in header_list %}
+            {% if col != 'index' %}
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{{ col }}</label>
+                <div class="layui-input-block">
+                    <input type="text" id="edit_daily_{{ col }}" class="layui-input" name="daily_station" >
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </form>
+    </div>
 <script>
 var table = layui.table;
 table.on('tool(demo)',function(obj){
@@ -113,9 +128,10 @@ table.on('tool(demo)',function(obj){
 
     if (layEvent == 'insert'){
         layer.msg('click insert');
+        data_insert = data;
         $.ajax({
             url:"{{ url('craft:table_display_insert') }}",
-            data:JSON.stringify(data),
+            data:JSON.stringify(data_insert),
             type:'POST',
 
             success:function(result){
@@ -130,20 +146,57 @@ table.on('tool(demo)',function(obj){
 
     } else if(layEvent == 'edit'){
 
-        $.ajax({
-            url:"{{ url('craft:table_display_edit') }}",
-            data:JSON.stringify(data),
-            type:'POST',
+        layer.open({
+            type: 1,
+            title: '编辑新增条目',
+            btn:['确认更新', '取消'],
+            content: $("#edit_row_form"),
+            success: function(layero, index){
 
-            success:function(result){
-                location.reload();
-                layer.msg(result, {time: 3000});
+                {% for col in header_list %}
+                {% if col != 'index' %}
+                    $("#edit_daily_{{ col }}").val(data1['{{ col }}']);
+                {% endif %}
+                {% endfor %}
             },
-            fail:function(result){
-                layer.msg('failed', {time: 3000});
-            },
+
+            btn1: function(){
+                layer.msg('手动填写edit', {time:3000});
+
+                data_input = new Object;
+                {% for col in header_list %}
+                {% if col != 'index' %}
+                    data_input['{{ col }}'] = $("#edit_daily_{{ col }}").val();
+                {% endif %}
+                {% endfor %}
+                data_input['index'] = data1['index'];
+
+                data_edit = new Object;
+                data_edit['row_data'] = data_input;
+                data_edit['table_name'] = table_name;
+
+                $.ajax({
+                    url:"{{ url('craft:table_display_edit') }}",
+                    data:JSON.stringify(data_edit),
+                    type:'POST',
+
+                    success:function(result){
+                        location.reload();
+                        layer.msg(result, {time: 3000});
+                    },
+                    fail:function(result){
+                        layer.msg('failed', {time: 3000});
+                    },
+                })
+            }
+
 
         })
+
+
+
+
+
     } else if(layEvent == 'foucs'){
         layer.msg('click foucs');
         var foucs_data = {};

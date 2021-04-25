@@ -110,6 +110,7 @@ def table_display_insert(request):
     logger.info(sql)
     return HttpResponse(str(recv_data))
 
+
 def table_display_edit(request):
     recv_data = json.loads(request.body)
     row_data = recv_data['row_data']
