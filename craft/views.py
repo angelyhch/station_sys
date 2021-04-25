@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from craft.utils import ConnectSqlite
 from .utils import suffix_view
 import json
+from craft.emails import run_apscheduler
+
 import logging
 logger = logging.getLogger()
 sh = logging.StreamHandler()
@@ -22,6 +24,22 @@ logger.addHandler(sh)
 def home(request):
     pass
     return render(request, 'craft/home.html')
+
+
+
+def daily_foucs(request):
+    db_station = ConnectSqlite()
+    df = db_station.read_table('daily_foucs_view')
+
+    header_list = df.columns.tolist()
+    body_data = df.values.tolist()
+    return render(request, 'craft/daily_foucs.html',
+                  {
+                      'header_list': header_list,
+                      'body_data': body_data
+                  }
+                  )
+
 
 def foucs_add(request):
     '''
@@ -48,7 +66,12 @@ def foucs_add(request):
     row_data['关注工位'] = daily_station
     row_data['所属线体'] = daily_line
     row_data['来源表'] = daily_table_name
-    row_data['daily_foucs_content'] = str(row_context['row_data'])
+
+    try:
+        row_data['daily_foucs_content'] = str(row_context['row_data'])  #自动添加时
+    except TypeError:
+        row_data['daily_foucs_content'] = row_context   #手动添加时
+
     table_name = 'daily_foucs'
     db_station = ConnectSqlite()
     sql = ConnectSqlite.build_sql(table_name, row_data, operate='insert')
@@ -70,7 +93,7 @@ def part_info(request, lingjianhao):
     :return:
     '''
     db_station = ConnectSqlite()
-    pbom_df = db_station.read_table('pbom')
+    pbom_df = db_station.read_table('pbom_view')
     part_info_df = pbom_df[pbom_df['lingjianhao']==lingjianhao]
 
     return render(request, 'craft/part_info.html',
@@ -105,7 +128,7 @@ def station_info(request, station='W1FF4-010'):
     '''
     station_upper = station.upper()
     db_station = ConnectSqlite()
-    table_list_df = db_station.read_table('table_list')
+    table_list_df = db_station.read_table('table_list_view')
     table_instation_list = table_list_df[table_list_df['is_instation'] == 1]['name'].to_list()
 
     station_dict = {}
@@ -114,7 +137,7 @@ def station_info(request, station='W1FF4-010'):
         xiangmu_st_df = table_df[table_df['station'] == station_upper]
         station_dict[xiangmu] = xiangmu_st_df
 
-    controlplan_df = db_station.read_table('controlplan')
+    controlplan_df = db_station.read_table('controlplan_view')
     table_instation_list.sort(key=lambda x: station_dict[x].shape[0], reverse=True)
     return render(request, 'craft/station_info.html',
                   {
@@ -135,7 +158,7 @@ def stations(request):
     '''
     pass
     db_station = ConnectSqlite()
-    df_station = db_station.read_table('station')
+    df_station = db_station.read_table('station_view')
     df_station_weight = db_station.read_table('view_station_weight')
 
     return render(request, 'craft/stations.html',
@@ -158,7 +181,7 @@ def table_display(request, table_name='station'):
     header_list = df.columns.tolist()
     body_data = df.values.tolist()
 
-    df_table_list = db_station.read_table('table_list')
+    df_table_list = db_station.read_table('table_list_view')
     table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
 
     return render(request, 'craft/table_display_guest.html',
@@ -185,7 +208,7 @@ def table_display_user(request, table_name='station'):
     header_list = df.columns.tolist()
     body_data = df.values.tolist()
 
-    df_table_list = db_station.read_table('table_list')
+    df_table_list = db_station.read_table('table_list_view')
     table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
 
     return render(request, 'craft/table_display_user.html',
@@ -196,3 +219,6 @@ def table_display_user(request, table_name='station'):
                       'table_name_mingcheng': table_name_mingcheng
                   })
 
+
+from craft.emails import run_apscheduler
+run_apscheduler()
