@@ -45,7 +45,7 @@ def send_mail_self():
         counts = len(foucs_stations_list)
 
         message_content = ''''''
-        message_content += f'<h2><a href="10.36.8.159:8000">今日关注</a>共<strong>{counts}</strong>项</h2>'
+        message_content += f'<h2><a href="http://10.36.8.159:8000">今日关注</a>共<strong>{counts}</strong>项</h2>'
 
         foucs_stations_string = ';'.join(foucs_stations_list)
         message_content += f'<p>涉及到工位有——【{foucs_stations_string}】<br> 详情如下表</p> <br>'
