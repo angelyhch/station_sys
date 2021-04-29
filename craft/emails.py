@@ -95,7 +95,7 @@ def run_apscheduler():
         scheduler = BackgroundScheduler()
         scheduler.add_jobstore(MemoryJobStore(), 'default') #todo:用DjangoJobStore()会把调动信息存入数据库，不过容易报警。
 
-        scheduler.add_job(send_mail_self, 'cron', hour='00', minute='15', id='send_mail_everyday',replace_existing=True)
+        scheduler.add_job(send_mail_self, 'cron', hour='00', minute='15', id='send_mail_everyday', misfire_grace_time=3600, replace_existing=True)
         scheduler.start()
     except Exception as e:
         print(e)
