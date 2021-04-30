@@ -78,4 +78,6 @@ class CraftConfig(AppConfig):
                          'laizhimin@baicmotor.com',
                          'zhengweikang@baicmotor.com',
                          'laiyuanhang@baicmotor.com',
-                         ]
+                         ]  #质量保卫战
+    EMAIL_TO_ADDRESS += ['lishuping@baicmotor.com',
+                         ]  #公司领导
