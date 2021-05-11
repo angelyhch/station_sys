@@ -219,6 +219,14 @@ def table_display_user(request, table_name='station'):
     header_list = df.columns.tolist()
     body_data = df.values.tolist()
 
+    station_table_df = db_station.read_table('station')
+    line_list = list(set(station_table_df['生产线']))
+    line_station_dict = {}
+    for line in line_list:
+        stations = station_table_df[station_table_df['生产线'] == line]['station'].to_list()
+        line_station_dict[line] = stations
+
+
     df_table_list = db_station.read_table('table_list_view')
     table_name_mingcheng = df_table_list.loc[df_table_list['name'] == table_name]['mingcheng'].values[0]
 
@@ -227,7 +235,9 @@ def table_display_user(request, table_name='station'):
                       'header_list': header_list,
                       'body_data': body_data,
                       'table_name': table_name,
-                      'table_name_mingcheng': table_name_mingcheng
+                      'table_name_mingcheng': table_name_mingcheng,
+                      'line_list': line_list,
+                      'line_station_dict': line_station_dict,
                   })
 
 
