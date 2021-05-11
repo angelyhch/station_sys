@@ -34,6 +34,9 @@ daily foucs
 </table>
 
 
+
+
+
 {% endblock content %}
 
 
@@ -78,16 +81,21 @@ daily foucs
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">关注工位</label>
+                <label class="layui-form-label">线体选择</label>
                 <div class="layui-input-block">
-                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
+                    <select name="line" id="input_daily_line" name="daily_line">
+                        <option value=""></option>
+                        {% for line in line_list %}
+                        <option value="{{ line }}">{{ line }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">所属线体</label>
+                <label class="layui-form-label">关注工位</label>
                 <div class="layui-input-block">
-                    <input type="text" id="input_daily_line" class="layui-input" name="daily_line" placeholder="请输入所属线体">
+                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
                 </div>
             </div>
 
@@ -96,6 +104,25 @@ daily foucs
 
 
 <script>
+
+$("#id_line_select").change(function(){
+    layer.msg('onchange run');
+    line = $("#id_line_select").val();
+    line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+
+    station_select = $('<select name="station"></select>');
+    option0 = $('<option value=""></option>');
+    station_select.append(option0);
+
+    for ( let station of line_station_dict[line]){
+        option = $('<option value="' + station + '">' +  station + '</option>');
+        station_select.append(option);
+    }
+
+    $("#id_station_select").append(station_select);
+
+    $("#id_station_select").prepend(options);
+});
 
 function daily_manual(){
 
@@ -108,6 +135,26 @@ function daily_manual(){
             title: '手动添加关注条目',
             btn:['提交关注', '取消'],
             content: $("#foucs_date_form"),
+
+            success: function(){
+                $("#id_line_select").change(function(){
+                    line = $("#id_line_select").val();
+                    line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+
+                    station_select = $('<select name="station"></select>');
+                    option0 = $('<option value=""></option>');
+                    station_select.append(option0);
+
+                    for ( let station of line_station_dict[line]){
+                        option = $('<option value="' + station + '">' +  station + '</option>');
+                        station_select.append(option);
+                    }
+
+                    $("#id_station_select").append(station_select);
+
+                    $("#id_station_select").prepend(options);
+                });
+            },
 
             btn1: function(){
                 var foucs_data_daily_manual = $("#input_daily_manual").val();

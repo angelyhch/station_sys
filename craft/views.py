@@ -31,12 +31,22 @@ def daily_foucs(request):
     db_station = ConnectSqlite()
     df = db_station.read_table('daily_foucs_view')
 
+    station_table_df = db_station.read_table('station')
+    line_list = list(set(station_table_df['生产线']))
+    line_station_dict = {}
+    for line in line_list:
+        stations = station_table_df[station_table_df['生产线'] == line]['station'].to_list()
+        line_station_dict[line] = stations
+
+
     header_list = df.columns.tolist()
     body_data = df.values.tolist()
     return render(request, 'craft/daily_foucs.html',
                   {
                       'header_list': header_list,
-                      'body_data': body_data
+                      'body_data': body_data,
+                      'line_list': line_list,
+                      'line_station_dict': line_station_dict,
                   }
                   )
 
