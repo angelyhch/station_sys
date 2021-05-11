@@ -77,16 +77,21 @@ craft home
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">关注工位</label>
+                <label class="layui-form-label">所属线体</label>
                 <div class="layui-input-block">
-                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
+                    <select name="line" id="input_daily_line" name="daily_line">
+                        <option value=""></option>
+                        {% for line in line_list %}
+                        <option value="{{ line }}">{{ line }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">所属线体</label>
+                <label class="layui-form-label">关注工位</label>
                 <div class="layui-input-block">
-                    <input type="text" id="input_daily_line" class="layui-input" name="daily_line" placeholder="{{ col }}">
+                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
                 </div>
             </div>
 
@@ -246,5 +251,63 @@ table.on('tool(demo)',function(obj){
 });
 
 </script>
+<script>
+    //线体工位联动选择
 
+var last_val = $("#input_daily_line").val();
+var station_select = null;
+setInterval(function(){
+    var now_val = $("#input_daily_line").val();
+    if (now_val != last_val){
+
+        var line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+        station_select = $('<select name="station" id="layer_pop_station"></select>');
+        var option0 = $('<option value=""></option>');
+        station_select.append(option0);
+        for ( let station of line_station_dict[now_val]){
+            let option = $('<option value="' + station + '">' +  station + '</option>');
+            station_select.append(option);
+        }
+
+
+        last_val = now_val;
+    }
+},1000);
+
+$("#id_line_select").change(function(){
+    layer.msg('onchange run');
+    line = $("#id_line_select").val();
+    line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+
+    station_select = $('<select name="station"></select>');
+    option0 = $('<option value=""></option>');
+    station_select.append(option0);
+    for ( let station of line_station_dict[line]){
+        option = $('<option value="' + station + '">' +  station + '</option>');
+        station_select.append(option);
+    }
+
+    $("#id_station_select").append(station_select);
+
+});
+
+$("#input_daily_station").focus(function(){
+    layer.open({
+        type: 1,
+        title: '选择工位',
+        content: $(station_select).prop("outerHTML"),
+        btn:['确定', '取消'],
+
+        yes: function(){
+            //把弹出框选择的值，写到输入框中，然后关掉弹出框。
+            $("#input_daily_station").val($("#layer_pop_station").val());
+            layer.close(layer.index);
+        },
+
+
+    });
+
+});
+
+</script>
 {% endblock scripts %}
