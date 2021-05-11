@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # 'craft', #todo: 用下一行替换，实现app级别的配置在项目中可以调用, 通过 apps.get_app_config('craft').name 调用name内容。
     'craft.apps.CraftConfig',
     'account',
+    'image',
 
 ]
 
@@ -158,3 +159,6 @@ INTERNAL_IPS = ['127.0.0.1']
 LOGIN_REDIRECT_URL = '/craft/stations'
 
 LOGIN_URL = '/account/login/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

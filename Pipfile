@@ -11,6 +11,9 @@ jinja2 = "*"
 xlrd = "*"
 schedule = "*"
 django-apscheduler = "*"
+pillow = "*"
+slugify = "*"
+sorl-thumbnail = "*"
 
 [dev-packages]
 
