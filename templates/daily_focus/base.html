@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+<div>
+
+<h4>表格清单</h4>
+
+<ul>
+    {% for table in craft_table_list[craft_table_list['is_display'] == 1]['name'].to_list() %}
+    <li><a class="btn btn-link" href="{{ url('craft:table_display', kwargs={'table_name':table}) }}">{{ craft_table_list[craft_table_list['name']==table]['mingcheng'].values[0] }}</a></li>
+    {% endfor %}
+</ul>
+
+</div>
+{% endblock sidebar %}
