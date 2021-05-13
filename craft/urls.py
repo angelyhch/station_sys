@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from craft import views
 
 
 app_name = 'craft'

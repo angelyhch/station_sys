@@ -19,6 +19,7 @@ from django.conf import settings
 from craft import views as craft_views
 
 urlpatterns = [
+    path('daily_focus/', include('daily_focus.urls')),
     path('admin/', admin.site.urls),
     path('craft/', include('craft.urls')),
     path('account/', include('account.urls')),
