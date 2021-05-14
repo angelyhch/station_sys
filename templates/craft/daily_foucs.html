@@ -7,7 +7,7 @@ daily foucs
 
 {% block content %}
 
-<h2><strong>今日关注</strong></h2>
+<h2><strong>今日关注</strong><small>----<a class="btn btn-primary" href="{{ url('craft:foucs_history') }}">关注历史</a></small></h2>
 <a class="btn btn-info text-right" id="daily_foucs_manual_button" onclick="daily_manual()">手动添加关注条目</a>
 
 <table   data-toggle="table" data-show-columns="true" data-search="true"

@@ -1,0 +1,37 @@
+{% extends 'daily_focus/base.html' %}
+
+{% block title %}
+upload focus
+{% endblock title %}
+
+
+{% block content %}
+
+<form class="layui-form" method="post" action=".">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+        {% for field in focus_form %} <br>
+        <div class="layui-form-item">
+                {{ field.label_tag() }}
+                {{ field }}
+        </div>
+        {% endfor %}
+
+        {% for field in focus_image_form %} <br>
+        <div class="layui-form-item">
+                {{ field.label_tag() }}
+                {{ field }}
+        </div>
+        {% endfor %}
+
+        <input type="submit" value="upload">
+</form>
+
+<!--<form class="form-horizontal" method="post" action=".">-->
+<!--        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">-->
+<!--        {{ focus_form.as_p() }}-->
+<!--        {{ focus_image_form.as_p() }}-->
+<!--        <input type="submit" value="upload">-->
+<!--</form>-->
+
+{% endblock content %}
