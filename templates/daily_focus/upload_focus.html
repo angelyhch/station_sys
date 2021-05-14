@@ -7,7 +7,7 @@ upload focus
 
 {% block content %}
 
-<form class="layui-form" method="post" action=".">
+<form class="layui-form" method="post" action="." enctype="multipart/form-data">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
         {% for field in focus_form %} <br>
@@ -17,11 +17,12 @@ upload focus
         </div>
         {% endfor %}
 
-        {% for field in focus_image_form %} <br>
-        <div class="layui-form-item">
-                {{ field.label_tag() }}
-                {{ field }}
-        </div>
+<!--        {% for field in focus_image_form %} <br>-->
+<!--        <div class="layui-form-item">-->
+<!--                {{ field.label_tag() }}-->
+<!--                {{ field }}-->
+<!--        </div>-->
+        {{ focus_image_form.as_p() }}
         {% endfor %}
 
         <input type="submit" value="upload">

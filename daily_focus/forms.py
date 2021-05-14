@@ -22,3 +22,10 @@ class FocusImageForm(forms.ModelForm):
         widgets = {
             'image': forms.ClearableFileInput(attrs={'class':'layui-input'})
         }
+
+    def clean_image(self):
+        image = self.data['image']
+        ext = image.name.split('.', 1)[-1].lower()
+        if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+            raise forms.ValidationError('扩展名错误.')
+        return image
