@@ -1,0 +1,34 @@
+{% extends 'craft/base.html' %}
+
+{% block title %}
+focus history
+{% endblock title %}
+
+
+{% block content %}
+<h2><strong>关注历史记录</strong></h2>
+<table   data-toggle="table" data-show-columns="true" data-search="true"
+         data-show-pagination-switch="true"
+         class="table-striped table-sm table table-bordered"
+>
+    <thead class="thead-dark">
+    <tr>
+        {% for col in header_list %}
+        <th data-sortable="true">{{ col }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in body_data %}
+        <tr>
+            {% for item in row %}
+            <td>{{ item }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+
+{% endblock content %}

@@ -26,6 +26,19 @@ def home(request):
     return render(request, 'craft/home.html')
 
 
+def foucs_history(request):
+    pass
+    db_station = ConnectSqlite()
+    df = db_station.read_table('daily_foucs')
+    header_list = df.columns.tolist()
+    body_data = df.values.tolist()
+    return render(request, 'craft/foucs_history.html',
+                  {
+                      'header_list': header_list,
+                      'body_data': body_data,
+                  }
+                  )
+
 
 def daily_foucs(request):
     db_station = ConnectSqlite()
