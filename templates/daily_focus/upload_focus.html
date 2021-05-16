@@ -83,7 +83,6 @@ $("#layer_id_upload_image_btn").click(function(){
 
 
 $("#id_submit").click(function(){
-    layer.msg('click');
     var form_data1 = new FormData($("#id_focus_form")[0]);
 
     for(let [key,value] of form_data1.entries()){
@@ -99,7 +98,8 @@ $("#id_submit").click(function(){
         contentType: false,
         processData: false,
         success:function(result){
-            layer.msg('ajax post ok');
+            layer.msg('上传成功',{time: 3000,});
+            location.reload();  //防止重复上传图片.
 
         },
     });

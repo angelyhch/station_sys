@@ -26,6 +26,9 @@ class Focus(models.Model):
     focus_end = models.DateField(verbose_name='关注结束')
     created = models.DateField(auto_now_add=True, db_index=True)
 
+    class Meta:
+        ordering = ['-focus_end']
+
     def __str__(self):
         return f'created[{self.created}] + focus_end[{self.focus_end}]'
 

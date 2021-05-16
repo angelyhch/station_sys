@@ -7,5 +7,74 @@ focus list
 
 {% block content %}
 
+<h2><strong>今日关注beta</strong><small>----<a class="btn btn-primary" href="{{ url('daily_focus:upload_focus') }}">添加关注</a></small></h2>
+<table   data-toggle="table" data-show-columns="true" data-search="true"
+         data-show-pagination-switch="true"
+         class="table-striped table-sm table table-bordered"
+>
+    <thead class="thead-dark">
+    <tr>
+        <th data-sortable="true">ID</th>
+        <th data-sortable="true">关注内容</th>
+        <th data-sortable="true">关注开始</th>
+        <th data-sortable="true">关注结束</th>
+        <th data-sortable="true">图片数量</th>
+        <th data-sortable="true">线体</th>
+        <th data-sortable="true">工位</th>
+        <th data-sortable="true">发布人</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for focus in all_focus %}
+        <tr>
+            <td>{{ focus.id }}</td>
+            <td><a style="color:blue" href="{{ url('daily_focus:focus_detail', args=(focus.id,)) }}"> {{ focus.focus_content }} <i class="bi bi-mouse2" ></i> </a></td>
+            <td>{{ focus.focus_start }}</td>
+            <td>{{ focus.focus_end }}</td>
+            <td>
+                {% for image in focus.images.all() %}
+                <a href="{{ image.image.url }}" target="_blank">
+                <img src="{{ image.image.url }}" width="60" height="60" alt="图片丢失" onmouseenter="image_show(this)">
+                </a>
+                {% endfor %}
+            </td>
+            <td>{{ focus.line }}</td>
+            <td>{{ focus.station }}</td>
+            <td>{{ focus.user }}</td>
+
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
 
 {% endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+
+<script type="text/javascript">
+function image_show(self){
+
+        let a_list = $(self).parents('td').children();
+        let src_list = new Array();
+        for(let a of a_list){
+            src_obj = {'src':a.href};
+            src_list.push(src_obj);
+        }
+
+
+    layer.photos({
+        photos: {"data": src_list},
+        anim: 5,
+
+    });
+    
+}
+
+</script>
+
+
+{% endblock scripts %}

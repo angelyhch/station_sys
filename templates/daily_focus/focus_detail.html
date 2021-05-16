@@ -1,0 +1,14 @@
+{% extends 'daily_focus/base.html' %}
+
+{% block title %}
+focus detail
+{% endblock title %}
+
+
+{% block content %}
+
+{% for image in images %}
+<img src="{{ image.image.url }}" width="100" height="100" alt="图片丢失">
+{% endfor %}
+
+{% endblock content %}
