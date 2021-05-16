@@ -8,7 +8,6 @@ import os
 # Create your models here.
 
 '''
-
 tuple(zip(range(len(line_list)), line_list))
 '''
 line_list = apps.get_app_config('daily_focus').LINE_LIST

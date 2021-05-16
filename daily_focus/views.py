@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from daily_focus.forms import FocusForm, FocusImageForm
 from craft.utils import ConnectSqlite, logger
 from daily_focus.models import Focus, FocusImage
+from django.apps import apps
 
 
 def home(request):
@@ -10,7 +11,6 @@ def home(request):
 
 
 def focus_detail(request, focus_id=47):
-    pass
     focus = Focus.objects.get(id=focus_id)
     images = list(focus.images.all())
 
@@ -33,6 +33,7 @@ def focus_list(request):
 
 
 def upload_focus(request):
+    line_station_dict = apps.get_app_config('daily_focus').LINE_STATION_DICT
     if request.method == 'POST':
         recv_data = request.POST
         logger.info(recv_data)
@@ -57,6 +58,7 @@ def upload_focus(request):
         return render(request, 'daily_focus/upload_focus.html',
                       {
                         'focus_form': focus_form,
+                        'line_station_dict': line_station_dict,
                       }
                       )
 
