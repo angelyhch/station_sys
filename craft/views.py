@@ -2,20 +2,10 @@ from django.shortcuts import render, reverse
 # Create your views here.
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from craft.utils import ConnectSqlite
+from craft.utils import ConnectSqlite, logger
 from .utils import suffix_view
 import json
-from craft.emails import run_apscheduler
 
-import logging
-logger = logging.getLogger()
-sh = logging.StreamHandler()
-logger.setLevel(logging.DEBUG)
-FORMAT = '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
-formatter = logging.Formatter(FORMAT)
-sh.setFormatter(formatter)
-
-logger.addHandler(sh)
 
 #todo: 下面这条语句不能放在这里，否则会导致sqlite 线程错误
 # db_station = ConnectSqlite()

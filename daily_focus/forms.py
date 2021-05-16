@@ -1,5 +1,7 @@
 from django import forms
 from daily_focus.models import Focus, FocusImage
+import time
+import datetime
 
 
 class FocusForm(forms.ModelForm):
@@ -14,6 +16,11 @@ class FocusForm(forms.ModelForm):
             'focus_end': forms.DateTimeInput(attrs={'class':'layui-input', 'type':'date'}),
         }
 
+    #todo: 增加默认值当前日期，未成功
+    initial = {
+        'focus_start': datetime.datetime.today(),
+    }
+
 
 class FocusImageForm(forms.ModelForm):
     class Meta:
@@ -24,7 +31,8 @@ class FocusImageForm(forms.ModelForm):
         }
 
     def clean_image(self):
-        image = self.data['image']
+        # image = self.data['image']  #todo: 模板用的是cleaned_data,实际会报警，改为data才可以
+        image = self.cleaned_data.get('image')
         ext = image.name.split('.', 1)[-1].lower()
         if ext not in ['jpg', 'jpeg', 'png', 'gif']:
             raise forms.ValidationError('扩展名错误.')

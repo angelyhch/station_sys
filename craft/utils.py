@@ -6,6 +6,15 @@ from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
+import logging
+logger = logging.getLogger()
+sh = logging.StreamHandler()
+logger.setLevel(logging.DEBUG)
+FORMAT = '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
+formatter = logging.Formatter(FORMAT)
+sh.setFormatter(formatter)
+logger.addHandler(sh)
+
 
 # todo:??
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/' + '..')
