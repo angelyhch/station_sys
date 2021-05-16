@@ -32,11 +32,11 @@ focus list
             <td>{{ focus.focus_start }}</td>
             <td>{{ focus.focus_end }}</td>
             <td>
-                {% for image in focus.images.all() %}
-                <a href="{{ image.image.url }}" target="_blank">
-                <img src="{{ image.image.url }}" width="60" height="60" alt="图片丢失" onmouseenter="image_show(this)">
-                </a>
-                {% endfor %}
+                <div>
+                    {% for image in focus.images.all() %}
+                    <img src="{{ image.image.url }}" width="60" height="60" alt="{{ focus.station }}" onclick="image_show(this)">
+                    {% endfor %}
+                </div>
             </td>
             <td>{{ focus.line }}</td>
             <td>{{ focus.station }}</td>
@@ -58,20 +58,11 @@ focus list
 <script type="text/javascript">
 function image_show(self){
 
-        let a_list = $(self).parents('td').children();
-        let src_list = new Array();
-        for(let a of a_list){
-            src_obj = {'src':a.href};
-            src_list.push(src_obj);
-        }
-
-
     layer.photos({
-        photos: {"data": src_list},
+        photos: $(self).parent()[0],
         anim: 5,
 
     });
-    
 }
 
 </script>
