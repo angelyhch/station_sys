@@ -7,31 +7,105 @@ upload focus
 
 {% block content %}
 
-<form class="layui-form" method="post" action=".">
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<form id="id_focus_form" class="layui-form" method="post" action="." enctype="multipart/form-data">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-        {% for field in focus_form %} <br>
-        <div class="layui-form-item">
-                {{ field.label_tag() }}
-                {{ field }}
-        </div>
-        {% endfor %}
+    {% for field in focus_form %} <br>
+    <div class="layui-form-item">
+        {{ field.label_tag() }}
+        {{ field }}
+    </div>
+    {% endfor %}
 
-        {% for field in focus_image_form %} <br>
-        <div class="layui-form-item">
-                {{ field.label_tag() }}
-                {{ field }}
-        </div>
-        {% endfor %}
+<!--    <input id="id_temp_file" type="file" name="file" multiple>-->
 
-        <input type="submit" value="upload">
 </form>
 
-<!--<form class="form-horizontal" method="post" action=".">-->
-<!--        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">-->
-<!--        {{ focus_form.as_p() }}-->
-<!--        {{ focus_image_form.as_p() }}-->
-<!--        <input type="submit" value="upload">-->
-<!--</form>-->
+<button class="btn btn-warning" id="layer_id_upload_image_btn">如有图片，请上传</button>
+
+<button id="id_submit" class="btn btn-primary">确认</button>
+
+<div style="display:none" id="layer_id_focus_image_div">
+    <form id="layer_id_focus_image_form" class="dropzone_not" method="post" action="." enctype="multipart/form-data">
+        <input id="id_focus_image_input" type="file" name="image" multiple>
+    </form>
+</div>
 
 {% endblock content %}
+
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+
+var focus_formdata = new FormData();
+
+$("#layer_id_upload_image_btn").click(function(){
+    layer.msg('click upload image');
+    var index_open1 = layer.open({
+        type: 1,
+        title: '图片上传',
+        content: $("#layer_id_focus_image_div"),
+        btn: ['确认', '取消'],
+
+        yes: function(){
+<!--            layer.msg('上传确认');-->
+            var upload_images = $("#id_focus_image_input")[0].files;
+            if (upload_images.length == 0){
+                layer.msg('请选择上传文件。');
+            }else{
+                for(let image of upload_images){
+                    focus_formdata.append('images', image, image.name);
+                }
+
+            layer.close(index_open1);
+
+            }
+        },
+    });
+
+});
+
+<!--Dropzone.options.idFocusImageForm = {-->
+<!--    uploadMultiple: true,-->
+<!--    addRemoveLinks: true,-->
+<!--    autoProcessQueue: false,-->
+<!--    init: function(e){-->
+<!--        layer.msg('init dropzone ');-->
+<!--        var dz = this;-->
+<!--        $("#id_submit").click(function(){-->
+<!--            dz.processQueue();-->
+<!--        });-->
+<!--    },-->
+<!---->
+<!--}-->
+
+
+$("#id_submit").click(function(){
+    layer.msg('click');
+    var form_data1 = new FormData($("#id_focus_form")[0]);
+
+    for(let [key,value] of form_data1.entries()){
+        focus_formdata.append(key, value);
+    }
+
+
+    $.ajax({
+        url: " {{ url('daily_focus:upload_focus') }} ",
+        type: "POST",
+        data: focus_formdata,
+
+        contentType: false,
+        processData: false,
+        success:function(result){
+            layer.msg('ajax post ok');
+
+        },
+    });
+});
+
+</script>
+
+
+{% endblock scripts %}
