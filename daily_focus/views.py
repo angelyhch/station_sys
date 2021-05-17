@@ -4,10 +4,20 @@ from daily_focus.forms import FocusForm, FocusImageForm
 from craft.utils import ConnectSqlite, logger
 from daily_focus.models import Focus, FocusImage
 from django.apps import apps
-
+from datetime import datetime
 
 def home(request):
     return render(request, 'daily_focus/home.html')
+
+
+def focus_today(request):
+    todays = Focus.objects.filter(focus_end__gt=datetime.today())
+
+    return render(request, 'daily_focus/focus_today.html',
+                  {
+                      'todays': todays,
+                  }
+                  )
 
 
 def focus_detail(request, focus_id=47):
