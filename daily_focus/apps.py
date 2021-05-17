@@ -12,7 +12,7 @@ def get_line_station():
     for line in line_list:
         stations = station_table_df[station_table_df['生产线'] == line]['station'].to_list()
         line_station_dict[line] = stations
-    return line_list,line_station_dict
+    return line_list, line_station_dict
 
 
 class DailyFocusConfig(AppConfig):

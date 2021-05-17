@@ -7,7 +7,8 @@ focus list
 
 {% block content %}
 
-<h2><strong>历史关注</strong><small>----<a class="btn btn-primary" href="{{ url('daily_focus:upload_focus') }}">添加关注</a></small></h2>
+<h2><strong>今日关注</strong><small>----<a class="btn btn-primary" href="{{ url('daily_focus:upload_focus') }}">添加关注</a></small></h2>
+<h4><a href="{{ url('daily_focus:focus_list') }}">关注历史 <i class="bi bi-hand-index"></i> </a></h4>
 <table   data-toggle="table" data-show-columns="true" data-search="true"
          data-show-pagination-switch="true"
          class="table-striped table-sm table table-bordered"
@@ -18,26 +19,28 @@ focus list
         <th data-sortable="true">关注内容</th>
         <th data-sortable="true">关注开始</th>
         <th data-sortable="true">关注结束</th>
-        <th data-sortable="true">图片数量</th>
+        <th data-sortable="true">剩余天数</th>
+        <th data-sortable="true">图片</th>
         <th data-sortable="true">线体</th>
         <th data-sortable="true">工位</th>
         <th data-sortable="true">发布人</th>
     </tr>
     </thead>
     <tbody>
-    {% for focus in all_focus %}
+    {% for focus in todays %}
         <tr>
             <td>{{ focus.id }}</td>
             <td><a style="color:blue" href="{{ url('daily_focus:focus_detail', args=(focus.id,)) }}"> {{ focus.focus_content }} <i class="bi bi-mouse2" ></i> </a></td>
             <td>{{ focus.focus_start }}</td>
             <td>{{ focus.focus_end }}</td>
-            {% if focus.images.count() > 0 %}
-                <td style="background-color:yellow">
-            {% else %}
-                <td>
-            {% endif %}
-                {{ focus.images.count() }}
-                </td>
+            <td>{{ focus.focus_end - focus.focus_start }}</td>
+            <td>
+                <div>
+                    {% for image in focus.images.all() %}
+                    <img src="{{ image.image.url }}" width="60" height="60" alt="{{ focus.station }}" onclick="image_show(this)">
+                    {% endfor %}
+                </div>
+            </td>
             <td>{{ focus.line }}</td>
             <td>{{ focus.station }}</td>
             <td>{{ focus.user }}</td>

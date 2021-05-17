@@ -8,7 +8,6 @@ import os
 # Create your models here.
 
 '''
-
 tuple(zip(range(len(line_list)), line_list))
 '''
 line_list = apps.get_app_config('daily_focus').LINE_LIST
@@ -25,6 +24,9 @@ class Focus(models.Model):
     focus_start = models.DateField(verbose_name='关注开始')
     focus_end = models.DateField(verbose_name='关注结束')
     created = models.DateField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-focus_end']
 
     def __str__(self):
         return f'created[{self.created}] + focus_end[{self.focus_end}]'

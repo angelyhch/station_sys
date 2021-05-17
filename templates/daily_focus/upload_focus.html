@@ -17,7 +17,6 @@ upload focus
     </div>
     {% endfor %}
 
-<!--    <input id="id_temp_file" type="file" name="file" multiple>-->
 
 </form>
 
@@ -37,10 +36,47 @@ upload focus
 {% block scripts %}
 {{ super() }}
 
+
 <script>
+var last_val = $("#id_line").val();
+var station_select = null;
+setInterval(function(){
+    var now_val = $("#id_line").val();
+    if (now_val != last_val){
+
+        var line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+        station_select = $('<select name="station" id="layer_pop_station"></select>');
+        var option0 = $('<option value=""></option>');
+        station_select.append(option0);
+        for ( let station of line_station_dict[now_val]){
+            let option = $('<option value="' + station + '">' +  station + '</option>');
+            station_select.append(option);
+        }
+
+        last_val = now_val;
+    }
+},1000);
+
+$("#id_station").focus(function(){
+    layer.open({
+        type: 1,
+        title: '选择工位',
+        content: $(station_select).prop("outerHTML"),
+        btn:['确定', '取消'],
+
+        yes: function(){
+            //把弹出框选择的值，写到输入框中，然后关掉弹出框。
+            $("#id_station").val($("#layer_pop_station").val());
+            layer.close(layer.index);
+        },
+
+
+    });
+
+});
+
 
 var focus_formdata = new FormData();
-
 $("#layer_id_upload_image_btn").click(function(){
     layer.msg('click upload image');
     var index_open1 = layer.open({
@@ -83,7 +119,6 @@ $("#layer_id_upload_image_btn").click(function(){
 
 
 $("#id_submit").click(function(){
-    layer.msg('click');
     var form_data1 = new FormData($("#id_focus_form")[0]);
 
     for(let [key,value] of form_data1.entries()){
@@ -99,7 +134,8 @@ $("#id_submit").click(function(){
         contentType: false,
         processData: false,
         success:function(result){
-            layer.msg('ajax post ok');
+            layer.msg('上传成功',{time: 3000,});
+            location.reload();  //防止重复上传图片.
 
         },
     });

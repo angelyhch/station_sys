@@ -14,9 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from craft import views as craft_views
+from django.views.static import serve
 
 urlpatterns = [
     path('daily_focus/', include('daily_focus.urls')),
@@ -25,6 +26,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('', craft_views.daily_foucs, name='home'),
 
+    re_path(r'^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}),
 
 ]
 
