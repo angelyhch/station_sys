@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm
 
-
 def user_login(request):
     if request.method == 'POST':
         login_form = LoginForm(request.POST)
