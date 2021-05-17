@@ -86,7 +86,6 @@ $("#layer_id_upload_image_btn").click(function(){
         btn: ['确认', '取消'],
 
         yes: function(){
-<!--            layer.msg('上传确认');-->
             var upload_images = $("#id_focus_image_input")[0].files;
             if (upload_images.length == 0){
                 layer.msg('请选择上传文件。');
@@ -102,21 +101,6 @@ $("#layer_id_upload_image_btn").click(function(){
     });
 
 });
-
-<!--Dropzone.options.idFocusImageForm = {-->
-<!--    uploadMultiple: true,-->
-<!--    addRemoveLinks: true,-->
-<!--    autoProcessQueue: false,-->
-<!--    init: function(e){-->
-<!--        layer.msg('init dropzone ');-->
-<!--        var dz = this;-->
-<!--        $("#id_submit").click(function(){-->
-<!--            dz.processQueue();-->
-<!--        });-->
-<!--    },-->
-<!---->
-<!--}-->
-
 
 $("#id_submit").click(function(){
     var form_data1 = new FormData($("#id_focus_form")[0]);
