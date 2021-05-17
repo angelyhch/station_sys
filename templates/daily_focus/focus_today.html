@@ -7,8 +7,10 @@ focus list
 
 {% block content %}
 
-<h2><strong>今日关注</strong><small>----<a class="btn btn-primary" href="{{ url('daily_focus:upload_focus') }}">添加关注</a></small></h2>
-<h4><a href="{{ url('daily_focus:focus_list') }}">关注历史 <i class="bi bi-hand-index"></i> </a></h4>
+<h2><strong>今日关注</strong><small>----<a class="btn btn-primary" href="{{ url('daily_focus:upload_focus') }}">跳转添加关注</a></small></h2>
+<h4><button class="btn btn-info"><a href="{{ url('daily_focus:focus_list') }}">关注历史 <i class="bi bi-hand-index"></i> </a></button> </h4>
+<br>
+<button id="id_input_focus" class="btn btn-primary" >手动添加关注</button>
 <table   data-toggle="table" data-show-columns="true" data-search="true"
          data-show-pagination-switch="true"
          class="table-striped table-sm table table-bordered"
@@ -33,7 +35,7 @@ focus list
             <td><a style="color:blue" href="{{ url('daily_focus:focus_detail', args=(focus.id,)) }}"> {{ focus.focus_content }} <i class="bi bi-mouse2" ></i> </a></td>
             <td>{{ focus.focus_start }}</td>
             <td>{{ focus.focus_end }}</td>
-            <td>{{ focus.focus_end - focus.focus_start }}</td>
+            <td>{{ (focus.focus_end - datetime.date.today()).days }}</td>
             <td>
                 <div>
                     {% for image in focus.images.all() %}
@@ -52,11 +54,41 @@ focus list
 </table>
 
 
+
 {% endblock content %}
 
 
 {% block scripts %}
 {{ super() }}
+
+<div style="display:none" id="id_layer_input">
+<form id="id_focus_form" class="layui-form" method="post" action="." enctype="multipart/form-data">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+    {% for field in focus_form %} <br>
+    <div class="layui-form-item">
+        {{ field.label_tag() }}
+        {{ field }}
+    </div>
+    {% endfor %}
+
+
+</form>
+
+<button class="btn btn-warning" id="layer_id_upload_image_btn">如有图片，请上传</button>
+
+<button id="id_submit" class="btn btn-primary">确认</button>
+
+</div>
+
+<div style="display:none" id="layer_id_focus_image_div">
+    <form id="layer_id_focus_image_form" class="dropzone_not" method="post" action="." enctype="multipart/form-data">
+        <input id="id_focus_image_input" type="file" name="image" multiple>
+    </form>
+</div>
+
+
+
 
 <script type="text/javascript">
 function image_show(self){
@@ -70,5 +102,127 @@ function image_show(self){
 
 </script>
 
+<script>
+
+var focus_formdata = new FormData();
+$("#layer_id_upload_image_btn").click(function(){
+    layer.msg('click upload image');
+    var index_open1 = layer.open({
+        type: 1,
+        title: '图片上传',
+        content: $("#layer_id_focus_image_div"),
+<!--        content: ,-->
+        btn: ['确认', '取消'],
+
+        yes: function(){
+            var upload_images = $("#id_focus_image_input")[0].files;
+            if (upload_images.length == 0){
+                layer.msg('请选择上传文件。');
+            }else{
+                for(let image of upload_images){
+                    focus_formdata.append('images', image, image.name);
+                }
+
+            layer.close(index_open1);
+
+            }
+        },
+    });
+
+});
+
+$("#id_submit").click(function(){
+    var form_data1 = new FormData($("#id_focus_form")[0]);
+
+    for(let [key,value] of form_data1.entries()){
+        focus_formdata.append(key, value);
+    }
+
+
+    $.ajax({
+        url: " {{ url('daily_focus:upload_focus') }} ",
+        type: "POST",
+        data: focus_formdata,
+
+        contentType: false,
+        processData: false,
+        success:function(result){
+            layer.msg('上传成功',{time: 3000,});
+            location.reload();  //防止重复上传图片.
+
+        },
+    });
+});
+
+$("#id_input_focus").click(function(){
+    layer.msg("click input focus.");
+    layer.open({
+        type: 1,
+        title: '输入关注条目',
+        content: $("#id_layer_input"),
+
+        yes: function(){
+            layer.msg('layer ok');
+        },
+
+    });
+});
+
+var last_val = $("#id_line").val();
+var station_select = null;
+setInterval(function(){
+    var now_val = $("#id_line").val();
+    if (now_val != last_val){
+
+        var line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+        station_select = $('<select name="station" id="layer_pop_station"></select>');
+        var option0 = $('<option value=""></option>');
+        station_select.append(option0);
+        for ( let station of line_station_dict[now_val]){
+            let option = $('<option value="' + station + '">' +  station + '</option>');
+            station_select.append(option);
+        }
+
+        last_val = now_val;
+    }
+},1000);
+
+$("#id_station").focus(function(){
+    layer.open({
+        type: 1,
+        title: '选择工位',
+        content: $(station_select).prop("outerHTML"),
+        btn:['确定', '取消'],
+
+        yes: function(){
+            //把弹出框选择的值，写到输入框中，然后关掉弹出框。
+            $("#id_station").val($("#layer_pop_station").val());
+            layer.close(layer.index);
+        },
+
+
+    });
+
+});
+
+$("#id_line").change(function(){
+    layer.msg('onchange run');
+    line = $("#id_line").val();
+    line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+
+    station_select = $('<select name="station"></select>');
+    option0 = $('<option value=""></option>');
+    station_select.append(option0);
+    for ( let station of line_station_dict[line]){
+        option = $('<option value="' + station + '">' +  station + '</option>');
+        station_select.append(option);
+    }
+
+    $("#id_station_select").append(station_select);
+
+});
+
+
+</script>
 
 {% endblock scripts %}

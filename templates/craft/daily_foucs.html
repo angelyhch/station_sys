@@ -174,15 +174,15 @@ function daily_manual(){
 
             success: function(){
                 $("#id_line_select").change(function(){
-                    line = $("#id_line_select").val();
-                    line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+                    var line = $("#id_line_select").val();
+                    var line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
 
                     station_select = $('<select name="station"></select>');
-                    option0 = $('<option value=""></option>');
+                    var option0 = $('<option value=""></option>');
                     station_select.append(option0);
 
                     for ( let station of line_station_dict[line]){
-                        option = $('<option value="' + station + '">' +  station + '</option>');
+                        let option = $('<option value="' + station + '">' +  station + '</option>');
                         station_select.append(option);
                     }
 
