@@ -16,15 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
-from craft import views as craft_views
 from django.views.static import serve
+from daily_focus import views as daily_focus_view
 
 urlpatterns = [
     path('daily_focus/', include('daily_focus.urls')),
     path('admin/', admin.site.urls),
     path('craft/', include('craft.urls')),
     path('account/', include('account.urls')),
-    path('', craft_views.daily_foucs, name='home'),
+    path('', daily_focus_view.focus_today, name='home'),
 
     re_path(r'^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}),
 
