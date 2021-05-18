@@ -139,8 +139,8 @@ $("#id_submit").click(function(){
 
 
     $.ajax({
-        url: " {{ url('daily_focus:upload_focus')}} ",
-        type: 'POST',
+        url: " {{ url('daily_focus:upload_focus') }} ",
+        type: "POST",
         data: focus_formdata,
 
         contentType: false,
@@ -173,12 +173,12 @@ setInterval(function(){
     var now_val = $("#id_line").val();
     if (now_val != last_val){
 
-        var line_station_dict = JSON.parse("{{ line_station_dict | tojson | safe }}")
-        station_select = $("<select name=\"station\" id=\"layer_pop_station\"></select>");
-        var option0 = $("<option value=\"\"></option>");
+        var line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
+        station_select = $("<select name='station' id='layer_pop_station'></select>");
+        var option0 = $('<option value=""></option>');
         station_select.append(option0);
         for ( let station of line_station_dict[now_val]){
-            let option = $("<option value=\"" + station + "\">" +  station + "</option>");
+            let option = $('<option value="' + station + '">' +  station + '</option>');
             station_select.append(option);
         }
 
@@ -189,9 +189,9 @@ setInterval(function(){
 $("#id_station").focus(function(){
     layer.open({
         type: 1,
-        title: "选择工位",
+        title: '选择工位',
         content: $(station_select).prop("outerHTML"),
-        btn:["确定", "取消"],
+        btn:['确定', '取消'],
 
         yes: function(){
             //把弹出框选择的值，写到输入框中，然后关掉弹出框。
@@ -205,15 +205,15 @@ $("#id_station").focus(function(){
 });
 
 $("#id_line").change(function(){
-    layer.msg("onchange run");
+    layer.msg('onchange run');
     line = $("#id_line").val();
-    line_station_dict = JSON.parse("{{ line_station_dict | tojson | safe }}")
+    line_station_dict = JSON.parse('{{ line_station_dict | tojson | safe }}')
 
-    station_select = $("<select name=\"station\"></select>");
-    option0 = $("<option value=\"\"></option>");
+    station_select = $('<select name="station"></select>');
+    option0 = $('<option value=""></option>');
     station_select.append(option0);
     for ( let station of line_station_dict[line]){
-        option = $("<option value=\"" + station + "\">" +  station + "</option>");
+        option = $('<option value="' + station + '">' +  station + '</option>');
         station_select.append(option);
     }
 
