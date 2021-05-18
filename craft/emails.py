@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 from django.apps import apps
 from django.core.mail import send_mail
 from craft.utils import ConnectSqlite
+from django.conf import settings
 
 #todo: 调用django自带sendmail未成功，用错误的密码和帐户也会正常返回1.不报错。
 def send_foucs_mail():
@@ -38,8 +39,8 @@ def send_mail_self():
         mail_from = apps.get_app_config('craft').EMAIL_FROM
         mail_to = apps.get_app_config('craft').EMAIL_TO
 
-        db_station = ConnectSqlite()
-        df = db_station.read_table('daily_foucs_view')
+        db = ConnectSqlite(settings.BASE_DIR / 'db.sqlite3')
+        df = db.read_table('daily_focus_focus_view')
 
         foucs_stations_list = df['关注工位'].to_list()
         counts = len(foucs_stations_list)
@@ -70,6 +71,7 @@ def send_mail_self():
 
     sender = apps.get_app_config('craft').EMAIL_FROM
     receivers = mail_to_address
+    # receivers = 'angelyhch@163.com'
 
     message = build_message()
 

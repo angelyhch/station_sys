@@ -4,7 +4,8 @@ from django.apps import apps
 import uuid
 import time
 import os
-
+import datetime
+import django
 # Create your models here.
 
 '''
@@ -42,5 +43,6 @@ def user_directory_path(instance, filename):
 
 class FocusImage(models.Model):
     image = models.ImageField(upload_to=user_directory_path, blank=True)
+    # created = models.DateField(auto_now_add=True)
     focus = models.ForeignKey(Focus, on_delete=models.PROTECT, related_name='images')
 
