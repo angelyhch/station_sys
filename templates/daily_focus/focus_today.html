@@ -23,6 +23,7 @@ focus list
         <th data-sortable="true">关注结束</th>
         <th data-sortable="true">剩余天数</th>
         <th data-sortable="true">图片</th>
+        <th data-sortable="true">跟进图片</th>
         <th data-sortable="true">线体</th>
         <th data-sortable="true">工位</th>
         <th data-sortable="true">发布人</th>
@@ -36,6 +37,13 @@ focus list
             <td>{{ focus.focus_start }}</td>
             <td>{{ focus.focus_end }}</td>
             <td>{{ (focus.focus_end - datetime.date.today()).days }}</td>
+            <td>
+                <div>
+                    {% for image in focus.images.all() %}
+                    <img src="{{ image.image.url }}" width="60" height="60" alt="{{ focus.station }}" onclick="image_show(this)">
+                    {% endfor %}
+                </div>
+            </td>
             <td>
                 <div>
                     {% for image in focus.images.all() %}

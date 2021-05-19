@@ -30,9 +30,7 @@ def delete_focus_image(request):
     pass
 
 
-
 def focus_detail(request, focus_id=47):
-
     focus = Focus.objects.get(id=focus_id)
     images = list(focus.images.all())
     focus_form = FocusForm(focus.__dict__)
