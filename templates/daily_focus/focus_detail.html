@@ -7,28 +7,68 @@ upload focus
 
 {% block content %}
 
-<form id="id_focus_form" class="layui-form" method="post" action="." enctype="multipart/form-data">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<div class="container">
 
-    {% for field in focus_form %} <br>
-    <div class="layui-form-item">
-        {{ field.label_tag() }}
-        {{ field }}
+    <div class="row">
+        <div class="col-md-12">
+            <button id="id_submit" class="btn btn-primary">更改确认提交</button>
+            <button class="btn btn-primary"><a href="{{ url('daily_focus:focus_record', args=(focus.id,)) }}">打印跟踪单</a></button>
+
+            <form id="id_focus_form" class="layui-form" method="post" action="." enctype="multipart/form-data">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+                {% for field in focus_form %} <br>
+                <div class="layui-form-item">
+                    {{ field.label_tag() }}
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </form>
+        </div>
     </div>
-    {% endfor %}
-</form>
+    <br>
+    <br>
 
-<button class="btn btn-warning" id="layer_id_upload_image_btn">如有新图片，请上传</button>
-<button id="id_submit" class="btn btn-primary">确认</button>
+    <div class="row">
+        <div class="col-md-12">
+            <ul>
+                <li>
+                    <button class="btn btn-warning" id="layer_id_upload_after_image_btn">跟进图片上传</button>
+                </li>
+                <li>
+                    <div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
+                        {% for image in focus.after_images.all() %}
+                        <laber>
+                            <button class="btn btn-warning" onclick="delete_image(this);" onmouseenter="delete_tips(this);">{{ loop.index }} <i class="bi bi-trash"></i></button>
+                            <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
+                        </laber>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-
-<div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
-    {% for image in images %}
-        <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
-    {% endfor %}
+    <div class="row">
+        <div class="col-md-12">
+            <ul>
+                <li>
+                    <button class="btn btn-warning" id="layer_id_upload_image_btn">如有新图片，请上传</button>
+                </li>
+                <li>
+                    <div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
+                        {% for image in focus.images.all() %}
+                        <label>
+                            <button class="btn btn-warning" onclick="delete_image(this);" onmouseenter="delete_tips(this);">{{ loop.index }} <i class="bi bi-trash"></i></button>
+                            <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
+                        </label>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
-
-<br>
 
 
 <div style="display:none" id="layer_id_focus_image_div">
@@ -37,11 +77,28 @@ upload focus
     </form>
 </div>
 
+<div style="display:none" id="layer_id_focus_after_image_div">
+    <form id="layer_id_focus_after_image_form" class="dropzone_not" method="post" action="." enctype="multipart/form-data">
+        <input id="id_focus_after_image_input" type="file" name="image" multiple>
+    </form>
+</div>
 {% endblock content %}
 
 
 {% block scripts %}
 {{ super() }}
+
+<script>
+    function delete_image(self){
+        layer.tips('delete image', self);
+    };
+
+    function delete_tips(self){
+        layer.tips('点击删除该图片', self);
+    }
+
+
+</script>
 
 
 <script>
@@ -84,6 +141,7 @@ $("#id_station").focus(function(){
 
 
 var focus_formdata = new FormData();
+
 $("#layer_id_upload_image_btn").click(function(){
     layer.msg('click upload image');
     var index_open1 = layer.open({
@@ -106,7 +164,30 @@ $("#layer_id_upload_image_btn").click(function(){
             }
         },
     });
+});
 
+$("#layer_id_upload_after_image_btn").click(function(){
+    layer.msg('click upload after_image');
+    var index_open1 = layer.open({
+        type: 1,
+        title: '图片上传',
+        content: $("#layer_id_focus_after_image_div"),
+        btn: ['确认', '取消'],
+
+        yes: function(){
+            var upload_images = $("#id_focus_after_image_input")[0].files;
+            if (upload_images.length == 0){
+                layer.msg('请选择上传文件。');
+            }else{
+                for(let image of upload_images){
+                    focus_formdata.append('after_images', image, image.name);
+                }
+
+            layer.close(index_open1);
+
+            }
+        },
+    });
 });
 
 $("#id_submit").click(function(){

@@ -2,10 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from daily_focus.forms import FocusForm, FocusImageForm
 from craft.utils import ConnectSqlite, logger
-from daily_focus.models import Focus, FocusImage
+from daily_focus.models import Focus, FocusImage, FocusAfterImage
 from django.apps import apps
 import datetime
-
+import time
 
 def home(request):
     return render(request, 'daily_focus/home.html')
@@ -26,19 +26,39 @@ def focus_today(request):
                   )
 
 
+def focus_record(request, focus_id=1):
+    focus = Focus.objects.get(id=focus_id)
+
+    focus_days = []
+    start = focus.focus_start
+    end = focus.focus_end
+    while start <= end:
+        focus_days.append(start)
+        start += datetime.timedelta(days=1)
+
+    return render(request, 'daily_focus/focus_record.html',
+                  {
+                      'focus': focus,
+                      'focus_days': focus_days,
+                  }
+                  )
+
+
 def delete_focus_image(request):
     pass
 
 
-def focus_detail(request, focus_id=47):
+def focus_detail(request, focus_id=1):
     focus = Focus.objects.get(id=focus_id)
-    images = list(focus.images.all())
     focus_form = FocusForm(focus.__dict__)
     line_station_dict = apps.get_app_config('daily_focus').LINE_STATION_DICT
 
     if request.method == 'POST':
         post_form = FocusForm(request.POST)
-        post_data = post_form.cleaned_data
+
+        if post_form.is_valid():
+            logger.info(post_form.cleaned_data)
+            post_data = post_form.cleaned_data
         for key in post_data.keys():
             focus.__setattr__(key, post_data[key])
         focus.save()
@@ -46,10 +66,19 @@ def focus_detail(request, focus_id=47):
         recv_images = request.FILES.getlist('images')
         if len(recv_images) > 0:
             for image in recv_images:
-                new_foucs_image = FocusImageForm().save(commit=False)
-                new_foucs_image.focus = focus
-                new_foucs_image.image = image
-                new_foucs_image.save()
+                # new_focus_image = FocusImageForm().save(commit=False)
+                new_focus_image = FocusImage()
+                new_focus_image.focus = focus
+                new_focus_image.image = image
+                new_focus_image.save()
+
+        recv_after_images = request.FILES.getlist('after_images')
+        if len(recv_after_images) > 0:
+            for image in recv_after_images:
+                new_focus_after_image = FocusAfterImage()
+                new_focus_after_image.focus = focus
+                new_focus_after_image.image = image
+                new_focus_after_image.save()
 
         return HttpResponse('update success')
 
@@ -57,7 +86,6 @@ def focus_detail(request, focus_id=47):
         return render(request, 'daily_focus/focus_detail.html',
                       {
                           'focus': focus,
-                          'images': images,
                           'focus_form': focus_form,
                           'line_station_dict': line_station_dict,
                       }

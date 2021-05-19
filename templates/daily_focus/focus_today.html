@@ -46,7 +46,7 @@ focus list
             </td>
             <td>
                 <div>
-                    {% for image in focus.images.all() %}
+                    {% for image in focus.after_images.all() %}
                     <img src="{{ image.image.url }}" width="60" height="60" alt="{{ focus.station }}" onclick="image_show(this)">
                     {% endfor %}
                 </div>
