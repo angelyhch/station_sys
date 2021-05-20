@@ -67,10 +67,10 @@ def delete_focus_after_image(request):
     image_field = image_path1[7:]   #把路径中/media/给去掉
 
     image = FocusAfterImage.objects.filter(image=image_field)
-
     image.delete()
 
     return HttpResponse('success delete')
+
 
 def focus_detail(request, focus_id=1):
     focus = Focus.objects.get(id=focus_id)
@@ -90,7 +90,6 @@ def focus_detail(request, focus_id=1):
         recv_images = request.FILES.getlist('images')
         if len(recv_images) > 0:
             for image in recv_images:
-                # new_focus_image = FocusImageForm().save(commit=False)
                 new_focus_image = FocusImage()
                 new_focus_image.focus = focus
                 new_focus_image.image = image
