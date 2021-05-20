@@ -39,7 +39,7 @@ upload focus
                     <div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
                         {% for image in focus.after_images.all() %}
                         <laber>
-                            <button class="btn btn-warning" onclick="delete_image(this);" onmouseenter="delete_tips(this);">{{ loop.index }} <i class="bi bi-trash"></i></button>
+                            <button class="btn btn-warning" onclick="delete_after_image(this);" onmouseenter="delete_tips(this);">id-{{ image.id }} <i class="bi bi-trash"></i></button>
                             <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
                         </laber>
                         {% endfor %}
@@ -59,7 +59,7 @@ upload focus
                     <div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
                         {% for image in focus.images.all() %}
                         <label>
-                            <button class="btn btn-warning" onclick="delete_image(this);" onmouseenter="delete_tips(this);">{{ loop.index }} <i class="bi bi-trash"></i></button>
+                            <button class="btn btn-warning" onclick="delete_image(this);" onmouseenter="delete_tips(this);">id-{{ image.id }} <i class="bi bi-trash"></i></button>
                             <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
                         </label>
                         {% endfor %}
@@ -106,8 +106,6 @@ upload focus
             success: function(result){
                 layer.msg(result);
             },
-
-
         });
     };
 
@@ -115,7 +113,25 @@ upload focus
         layer.tips('点击删除该图片', self);
     }
 
+    function delete_after_image(self){
+        layer.tips('delete after_image', self);
+        var after_image_src = $(self).parent().children('img').attr('src');
+        var formdata = new FormData;
+        formdata.append('after_image_src', after_image_src);
 
+        $.ajax({
+            url: "{{ url('daily_focus:delete_focus_after_image') }}",
+            method: 'POST',
+            data: formdata,
+
+            contentType: false,
+            processData: false,
+
+            success: function(result){
+                layer.msg(result);
+            },
+        });
+    }
 </script>
 
 

@@ -51,22 +51,26 @@ def delete_focus_image(request):
     logger.info(request.POST)
     image_src_url = request.POST['image_src']
     image_path1 = urllib.parse.unquote(image_src_url)
-    image_path = os.path.join(settings.BASE_DIR, image_path1[1:])   #[1:] 把最前面的/给去掉，拼接才能正确
+    image_field = image_path1[7:]   #把路径中/media/给去掉
 
-    image_field = image_path1[6:]   #把路径中/media/给去掉
     image = FocusImage.objects.filter(image=image_field)
 
-    # image.delete()
+    image.delete()
 
-    # if os.path.exists(image_path):
-    #     os.remove(image_path)
-    # else:
-    #     logger.warning(f'image-{image_path} not exist')
-
-
-    pass
     return HttpResponse('success delete')
 
+
+def delete_focus_after_image(request):
+    logger.info(request.POST)
+    image_src_url = request.POST['after_image_src']
+    image_path1 = urllib.parse.unquote(image_src_url)
+    image_field = image_path1[7:]   #把路径中/media/给去掉
+
+    image = FocusAfterImage.objects.filter(image=image_field)
+
+    image.delete()
+
+    return HttpResponse('success delete')
 
 def focus_detail(request, focus_id=1):
     focus = Focus.objects.get(id=focus_id)

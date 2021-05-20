@@ -18,3 +18,6 @@ class DailyFocusConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'daily_focus'
     LINE_LIST, LINE_STATION_DICT = get_line_station()
+
+    def ready(self):
+        import daily_focus.singals
