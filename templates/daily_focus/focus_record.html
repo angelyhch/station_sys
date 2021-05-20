@@ -1,0 +1,119 @@
+{% extends 'daily_focus/base.html' %}
+
+
+{% block title %}
+focus record
+{% endblock title %}
+
+
+{% block header %}
+{{ super() }}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">每日关注项目跟踪单 </h1>
+            <br>
+            <p class="text-center">确认信息ok后，用浏览器预览并打印</p>
+            <br>
+        </div>
+    </div>
+</div>
+
+{% endblock header %}
+
+
+{% block sidebar %}
+<h3 class="text-center">每日确认</h3>
+
+<table class="table table-striped table-bordered ">
+    <thead>
+    <th>日期</th>
+    <th>关注签名</th>
+    </thead>
+    <tbody>
+    {% for day in focus_days %}
+    <tr>
+        <td>
+            {{ day }}
+        </td>
+        <td>
+
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock sidebar %}
+
+
+{% block content %}
+<h3 class="text-center">关注详情</h3>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered text-center">
+                <thead>
+                <th>关注开始</th>
+                <th>关注结束</th>
+                <th>线体</th>
+                <th>工位</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ focus.focus_start }}</td>
+                    <td>{{ focus.focus_end }}</td>
+                    <td>{{ focus.line }}</td>
+                    <td>{{ focus.station }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered text-center">
+                <thead>
+                <th>备注说明（可输入或手写补充）</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <textarea name="tips" id="id_tips" cols="150" rows="6"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-bordered text-center">
+                <thead>
+                <th>关注内容描述</th>
+                <th>问题图片</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ focus.focus_content }}</td>
+                    <td>
+                        <div class="layer_photos_div" style="float:left; padding:20; margin:40px; border:1px solid">
+                            {% for image in focus.images.all() %}
+                            <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}

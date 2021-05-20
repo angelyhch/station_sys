@@ -24,6 +24,7 @@ class Focus(models.Model):
     focus_content = models.TextField(verbose_name='关注内容', blank=True)
     focus_start = models.DateField(verbose_name='关注开始')
     focus_end = models.DateField(verbose_name='关注结束')
+    last_modify = models.DateTimeField(auto_now=True, db_index=True)
     created = models.DateField(auto_now_add=True, db_index=True)
 
     class Meta:
@@ -43,6 +44,11 @@ def user_directory_path(instance, filename):
 
 class FocusImage(models.Model):
     image = models.ImageField(upload_to=user_directory_path, blank=True)
-    # created = models.DateField(auto_now_add=True)
-    focus = models.ForeignKey(Focus, on_delete=models.PROTECT, related_name='images')
+    created = models.DateField(auto_now_add=True, db_index=True)
+    focus = models.ForeignKey(Focus, on_delete=models.SET_NULL, null=True, related_name='images')
 
+
+class FocusAfterImage(models.Model):
+    image = models.ImageField(upload_to=user_directory_path, blank=True)
+    created = models.DateField(auto_now_add=True, db_index=True)
+    focus = models.ForeignKey(Focus, on_delete=models.SET_NULL, null=True, related_name='after_images')
