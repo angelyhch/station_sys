@@ -91,6 +91,24 @@ upload focus
 <script>
     function delete_image(self){
         layer.tips('delete image', self);
+        var image_src = $(self).parent().children('img').attr('src');
+        var formdata = new FormData;
+        formdata.append('image_src', image_src);
+
+        $.ajax({
+            url: "{{ url('daily_focus:delete_focus_image') }}",
+            method: 'POST',
+            data: formdata,
+
+            contentType: false,
+            processData: false,
+
+            success: function(result){
+                layer.msg(result);
+            },
+
+
+        });
     };
 
     function delete_tips(self){
