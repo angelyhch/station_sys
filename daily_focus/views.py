@@ -9,7 +9,7 @@ import time
 import urllib
 import os
 from django.conf import settings
-
+import json
 def home(request):
     return render(request, 'daily_focus/home.html')
 
@@ -67,10 +67,10 @@ def delete_focus_after_image(request):
     image_field = image_path1[7:]   #把路径中/media/给去掉
 
     image = FocusAfterImage.objects.filter(image=image_field)
-
     image.delete()
 
     return HttpResponse('success delete')
+
 
 def focus_detail(request, focus_id=1):
     focus = Focus.objects.get(id=focus_id)
@@ -90,7 +90,6 @@ def focus_detail(request, focus_id=1):
         recv_images = request.FILES.getlist('images')
         if len(recv_images) > 0:
             for image in recv_images:
-                # new_focus_image = FocusImageForm().save(commit=False)
                 new_focus_image = FocusImage()
                 new_focus_image.focus = focus
                 new_focus_image.image = image
@@ -156,3 +155,32 @@ def upload_focus(request):
                       }
                       )
 
+def record_add_focus(request):
+    '''
+    记录表格自动加入focus
+    :param request:
+    :return:
+    '''
+
+    recv_data = json.loads(request.body)
+
+    daily_start = recv_data['daily_start']
+    daily_end = recv_data['daily_end']
+    daily_faburen = recv_data['daily_faburen']
+    daily_station = recv_data['daily_station']
+    daily_line = recv_data['daily_line']
+    daily_table_name = recv_data['table_name']
+
+    row_context = recv_data['context']
+
+    focus = Focus()
+    focus.focus_content = str(row_context['row_data'])
+    focus.focus_start = daily_start
+    focus.focus_end = daily_end
+    focus.station = daily_station
+    focus.line = daily_line
+    focus.user = request.user
+
+    focus.save()
+
+    return HttpResponse(str(row_context))

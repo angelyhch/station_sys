@@ -161,9 +161,6 @@ def station_info(request, station='W1FF4-010'):
                   })
 
 
-
-
-
 def stations(request):
     '''
     显示工位清单目录以及汇总信息

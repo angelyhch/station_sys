@@ -228,7 +228,8 @@ table.on('tool(demo)',function(obj){
 
                 // btn内部运行ajax
                 $.ajax({
-                    url:"{{ url('craft:foucs_add') }}",
+<!--                    url:"{{ url('craft:foucs_add') }}",-->
+                    url: "{{ url('daily_focus:record_add_focus') }}",
                     data: JSON.stringify(foucs_data),
                     type: 'POST',
 
