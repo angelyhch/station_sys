@@ -33,7 +33,7 @@ focus list
     {% for focus in todays %}
         <tr>
             <td>{{ focus.id }}</td>
-            <td><a style="color:blue" href="{{ url('daily_focus:focus_detail', args=(focus.id,)) }}"> {{ focus.focus_content }} <i class="bi bi-mouse2" ></i> </a></td>
+            <td><a style="color:blue" href="{{ url('daily_focus:focus_detail', args=(focus.id,)) }}"> {{ focus.focus_content | filter_trim_quote}} <i class="bi bi-mouse2" ></i> </a></td>
             <td>{{ focus.focus_start }}</td>
             <td>{{ focus.focus_end }}</td>
             <td>{{ (focus.focus_end - datetime.date.today()).days }}</td>
