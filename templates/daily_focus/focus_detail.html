@@ -243,7 +243,7 @@ $("#id_submit").click(function(){
         contentType: false,
         processData: false,
         success:function(result){
-            layer.msg('上传成功');
+            layer.msg(result);
             location.reload();  //防止重复上传图片.
 
         },
