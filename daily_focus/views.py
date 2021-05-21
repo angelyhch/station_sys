@@ -83,6 +83,9 @@ def focus_detail(request, focus_id=1):
         if post_form.is_valid():
             logger.info(post_form.cleaned_data)
             post_data = post_form.cleaned_data
+        else:
+            return HttpResponse('输入数据不全，请补全数据再提交！')
+
         for key in post_data.keys():
             focus.__setattr__(key, post_data[key])
         focus.save()
@@ -103,7 +106,7 @@ def focus_detail(request, focus_id=1):
                 new_focus_after_image.image = image
                 new_focus_after_image.save()
 
-        return HttpResponse('update success')
+        return HttpResponse('上传成功，请移步【今日关注】查看！')
 
     else:
         return render(request, 'daily_focus/focus_detail.html',
@@ -183,4 +186,4 @@ def record_add_focus(request):
 
     focus.save()
 
-    return HttpResponse(str(row_context))
+    return HttpResponse('添加成功，请移步【今日关注】查看！')

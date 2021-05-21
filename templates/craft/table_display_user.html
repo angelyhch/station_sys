@@ -235,15 +235,13 @@ table.on('tool(demo)',function(obj){
 
                     success: function(result){
                         layer.close(layer.index);
-                        layer.msg('该项目已加入【今日关注】，您可以移步查看', {time: 3000});
+                        layer.msg(result);
                     },
 
                     fail: function(result){
                         layer.msg('抱歉！添加失败，请再次尝试或联系管理员。')
                     }
-
                 });
-
             },
         });
 
