@@ -12,5 +12,6 @@ urlpatterns = [
     path('focus_today/', views.focus_today, name='focus_today'),
     path('delete_focus_image/', views.delete_focus_image, name='delete_focus_image'),
     path('delete_focus_after_image/', views.delete_focus_after_image, name='delete_focus_after_image'),
+    path('record_add_focus/', views.record_add_focus, name='record_add_focus'),
 
 ]
