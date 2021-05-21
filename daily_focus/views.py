@@ -48,28 +48,30 @@ def focus_record(request, focus_id=1):
 
 
 def delete_focus_image(request):
-    logger.info(request.POST)
+    logger.debug(request.POST)
     image_src_url = request.POST['image_src']
     image_path1 = urllib.parse.unquote(image_src_url)
     image_field = image_path1[7:]   #把路径中/media/给去掉
 
-    image = FocusImage.objects.filter(image=image_field)
+    image = FocusImage.objects.get(image=image_field)
+    image_id = image.id
 
     image.delete()
 
-    return HttpResponse('success delete')
+    return HttpResponse(f'success delete image{image_id}')
 
 
 def delete_focus_after_image(request):
-    logger.info(request.POST)
+    logger.debug(request.POST)
     image_src_url = request.POST['after_image_src']
     image_path1 = urllib.parse.unquote(image_src_url)
     image_field = image_path1[7:]   #把路径中/media/给去掉
 
-    image = FocusAfterImage.objects.filter(image=image_field)
+    image = FocusAfterImage.objects.get(image=image_field)
+    image_id = image.id
     image.delete()
 
-    return HttpResponse('success delete')
+    return HttpResponse(f'success delete image-{image_id}')
 
 
 def focus_detail(request, focus_id=1):
@@ -81,7 +83,7 @@ def focus_detail(request, focus_id=1):
         post_form = FocusForm(request.POST)
 
         if post_form.is_valid():
-            logger.info(post_form.cleaned_data)
+            logger.debug(post_form.cleaned_data)
             post_data = post_form.cleaned_data
         else:
             return HttpResponse('输入数据不全，请补全数据再提交！')
@@ -132,7 +134,7 @@ def upload_focus(request):
     line_station_dict = apps.get_app_config('daily_focus').LINE_STATION_DICT
     if request.method == 'POST':
         recv_data = request.POST
-        logger.info(recv_data)
+        logger.debug(recv_data)
         focus_form = FocusForm(request.POST)
         if focus_form.is_valid():
             new_focus = focus_form.save(commit=False)

@@ -3,22 +3,32 @@ import pandas as pd
 import os
 import sqlite3
 from django.conf import settings
+import logging
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
-import logging
-logger = logging.getLogger()
-sh = logging.StreamHandler()
-logger.setLevel(logging.DEBUG)
-FORMAT = '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
-formatter = logging.Formatter(FORMAT)
-sh.setFormatter(formatter)
-logger.addHandler(sh)
+
+def create_logger():
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    FORMAT = '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
+    formatter = logging.Formatter(FORMAT)
+
+    sh = logging.StreamHandler()
+    sh.setFormatter(formatter)
+    sh.setLevel(logging.DEBUG)
+
+    fh = logging.FileHandler(os.path.join(settings.BASE_DIR, 'logger.txt'))
+    fh.setFormatter(formatter)
+    fh.setLevel(logging.INFO)
+
+    logger.addHandler(sh)
+    logger.addHandler(fh)
+
+    return logger
 
 
-# todo:??
-# sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/' + '..')
-# sys.path.append('..')
+logger = create_logger()
 
 
 class ConnectSqlite:
