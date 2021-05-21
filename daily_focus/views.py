@@ -92,23 +92,7 @@ def focus_detail(request, focus_id=1):
             focus.__setattr__(key, post_data[key])
         focus.save()
 
-        recv_images = request.FILES.getlist('images')
-        if len(recv_images) > 0:
-            for image in recv_images:
-                new_focus_image = FocusImage()
-                new_focus_image.focus = focus
-                new_focus_image.image = image
-                new_focus_image.save()
-
-        recv_after_images = request.FILES.getlist('after_images')
-        if len(recv_after_images) > 0:
-            for image in recv_after_images:
-                new_focus_after_image = FocusAfterImage()
-                new_focus_after_image.focus = focus
-                new_focus_after_image.image = image
-                new_focus_after_image.save()
-
-        return HttpResponse('上传成功，请移步【今日关注】查看！')
+        return HttpResponse('关注数据更新成功')
 
     else:
         return render(request, 'daily_focus/focus_detail.html',
