@@ -120,6 +120,31 @@ def focus_detail(request, focus_id=1):
                       )
 
 
+def upload_image(request):
+    if request.method == 'POST':
+        recv_data = request.POST
+        focus_id = recv_data['focus_id']
+        focus = Focus.objects.get(id=focus_id)
+
+        recv_images = request.FILES.getlist('images')
+        if len(recv_images) > 0:
+            for image in recv_images:
+                new_focus_image = FocusImage()
+                new_focus_image.focus = focus
+                new_focus_image.image = image
+                new_focus_image.save()
+
+        recv_after_images = request.FILES.getlist('after_images')
+        if len(recv_after_images) > 0:
+            for image in recv_after_images:
+                new_focus_after_image = FocusAfterImage()
+                new_focus_after_image.focus = focus
+                new_focus_after_image.image = image
+                new_focus_after_image.save()
+
+        return HttpResponse('success upload image!')
+
+
 def focus_list(request):
     all_focus = Focus.objects.all()
 

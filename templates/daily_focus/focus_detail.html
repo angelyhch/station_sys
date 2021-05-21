@@ -93,7 +93,7 @@ upload focus
 
 <script>
     function delete_image(self){
-        layer.tips('delete image', self);
+<!--        layer.tips('delete image', self);-->
         var image_src = $(self).parent().children('img').attr('src');
         var formdata = new FormData;
         formdata.append('image_src', image_src);
@@ -107,6 +107,7 @@ upload focus
             processData: false,
 
             success: function(result){
+                location.reload();
                 layer.msg(result);
             },
         });
@@ -117,7 +118,7 @@ upload focus
     }
 
     function delete_after_image(self){
-        layer.tips('delete after_image', self);
+<!--        layer.tips('delete after_image', self);-->
         var after_image_src = $(self).parent().children('img').attr('src');
         var formdata = new FormData;
         formdata.append('after_image_src', after_image_src);
@@ -131,6 +132,7 @@ upload focus
             processData: false,
 
             success: function(result){
+                location.reload();
                 layer.msg(result);
             },
         });
@@ -176,11 +178,13 @@ $("#id_station").focus(function(){
 
 });
 
+</script>
 
-var focus_formdata = new FormData();
-
-$("#layer_id_upload_image_btn").click(function(){
+<script >
+function upload_image(event){
     layer.msg('click upload image');
+    var form_data = new FormData;
+    form_data.append('focus_id', {{ focus.id }})
     var index_open1 = layer.open({
         type: 1,
         title: '图片上传',
@@ -193,47 +197,43 @@ $("#layer_id_upload_image_btn").click(function(){
                 layer.msg('请选择上传文件。');
             }else{
                 for(let image of upload_images){
-                    focus_formdata.append('images', image, image.name);
+                    form_data.append(event.data.image_type, image, image.name);
                 }
 
-            layer.close(index_open1);
+            $.ajax({
+                url: "{{ url('daily_focus:upload_image') }}",
+                method: 'POST',
+                data: form_data,
 
+                processData: false,
+                contentType: false,
+
+                success:function(result){
+                    layer.close(index_open1);
+                    location.reload();  //防止重复上传图片.
+                    layer.msg(result);
+                },
+            });
             }
         },
     });
-});
+}
 
-$("#layer_id_upload_after_image_btn").click(function(){
-    layer.msg('click upload after_image');
-    var index_open1 = layer.open({
-        type: 1,
-        title: '图片上传',
-        content: $("#layer_id_focus_after_image_div"),
-        btn: ['确认', '取消'],
 
-        yes: function(){
-            var upload_images = $("#id_focus_after_image_input")[0].files;
-            if (upload_images.length == 0){
-                layer.msg('请选择上传文件。');
-            }else{
-                for(let image of upload_images){
-                    focus_formdata.append('after_images', image, image.name);
-                }
+$("#layer_id_upload_after_image_btn").bind('click',{'image_type':'after_images'}, upload_image);
+$("#layer_id_upload_image_btn").bind('click', {'image_type':'images'},upload_image);
 
-            layer.close(index_open1);
+</script>
 
-            }
-        },
-    });
-});
+<script >
 
 $("#id_submit").click(function(){
     var form_data1 = new FormData($("#id_focus_form")[0]);
+    var focus_formdata = new FormData();
 
     for(let [key,value] of form_data1.entries()){
         focus_formdata.append(key, value);
     }
-
 
     $.ajax({
         url: " {{ url('daily_focus:focus_detail', args=(focus.id,)) }} ",

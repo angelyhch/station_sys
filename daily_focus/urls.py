@@ -13,5 +13,6 @@ urlpatterns = [
     path('delete_focus_image/', views.delete_focus_image, name='delete_focus_image'),
     path('delete_focus_after_image/', views.delete_focus_after_image, name='delete_focus_after_image'),
     path('record_add_focus/', views.record_add_focus, name='record_add_focus'),
+    path('upload_image/', views.upload_image, name='upload_image'),
 
 ]
