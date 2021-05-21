@@ -92,6 +92,24 @@ def focus_detail(request, focus_id=1):
             focus.__setattr__(key, post_data[key])
         focus.save()
 
+        return HttpResponse('关注数据更新成功')
+
+    else:
+        return render(request, 'daily_focus/focus_detail.html',
+                      {
+                          'focus': focus,
+                          'focus_form': focus_form,
+                          'line_station_dict': line_station_dict,
+                      }
+                      )
+
+
+def upload_image(request):
+    if request.method == 'POST':
+        recv_data = request.POST
+        focus_id = recv_data['focus_id']
+        focus = Focus.objects.get(id=focus_id)
+
         recv_images = request.FILES.getlist('images')
         if len(recv_images) > 0:
             for image in recv_images:
@@ -108,16 +126,7 @@ def focus_detail(request, focus_id=1):
                 new_focus_after_image.image = image
                 new_focus_after_image.save()
 
-        return HttpResponse('上传成功，请移步【今日关注】查看！')
-
-    else:
-        return render(request, 'daily_focus/focus_detail.html',
-                      {
-                          'focus': focus,
-                          'focus_form': focus_form,
-                          'line_station_dict': line_station_dict,
-                      }
-                      )
+        return HttpResponse('success upload image!')
 
 
 def focus_list(request):
