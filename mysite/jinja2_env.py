@@ -8,6 +8,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 from craft.utils import set_craft_global
 
 
+def filter_trim_quote(string):
+    temp = string.replace('\'', '')
+    result = temp.replace('\"', '')
+    return result
+
+
 def environment(**options):
     env = Environment(**options)
     env.globals.update({
@@ -15,4 +21,7 @@ def environment(**options):
         'url': reverse,
     })
     env.globals.update(set_craft_global())
+
+    env.filters['filter_trim_quote'] = filter_trim_quote
+
     return env
