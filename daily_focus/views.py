@@ -176,23 +176,9 @@ def record_add_focus(request):
     :return:
     '''
 
-    recv_data = json.loads(request.body)
+    recv_data = request.POST
 
-    daily_start = recv_data['daily_start']
-    daily_end = recv_data['daily_end']
-    daily_faburen = recv_data['daily_faburen']
-    daily_station = recv_data['daily_station']
-    daily_line = recv_data['daily_line']
-    daily_table_name = recv_data['table_name']
-
-    row_context = recv_data['context']
-
-    focus = Focus()
-    focus.focus_content = str(row_context['row_data'])
-    focus.focus_start = daily_start
-    focus.focus_end = daily_end
-    focus.station = daily_station
-    focus.line = daily_line
+    focus = FocusForm(recv_data).save(commit=False)
     focus.user = request.user
 
     focus.save()

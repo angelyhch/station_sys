@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from craft.utils import ConnectSqlite, logger
 from .utils import suffix_view
 import json
-
+from daily_focus.models import Focus, Station
+from daily_focus.forms import FocusForm, StationForm
 
 #todo: 下面这条语句不能放在这里，否则会导致sqlite 线程错误
 # db_station = ConnectSqlite()
@@ -41,7 +42,6 @@ def daily_foucs(request):
         stations = station_table_df[station_table_df['生产线'] == line]['station'].to_list()
         line_station_dict[line] = stations
 
-
     header_list = df.columns.tolist()
     body_data = df.values.tolist()
     return render(request, 'craft/daily_foucs.html',
@@ -52,50 +52,6 @@ def daily_foucs(request):
                       'line_station_dict': line_station_dict,
                   }
                   )
-
-
-def foucs_add(request):
-    '''
-    接收foucs_layer的ajax请求数据，并写入daily_foucs表中
-    :param request:
-    :return:
-    '''
-    recv_data = json.loads(request.body)
-
-    daily_start = recv_data['daily_start']
-    daily_end = recv_data['daily_end']
-    daily_faburen = recv_data['daily_faburen']
-    daily_station = recv_data['daily_station']
-    daily_line = recv_data['daily_line']
-    daily_table_name = recv_data['table_name']
-
-    row_context = recv_data['context']
-
-    row_data = {}
-    row_data['index'] = None
-    row_data['关注开始日'] = daily_start
-    row_data['关注结束日'] = daily_end
-    row_data['发布人'] = daily_faburen
-    row_data['关注工位'] = daily_station
-    row_data['所属线体'] = daily_line
-    row_data['来源表'] = daily_table_name
-
-    try:
-        row_data['daily_foucs_content'] = str(row_context['row_data'])  #自动添加时
-    except TypeError:
-        row_data['daily_foucs_content'] = row_context   #手动添加时
-
-    table_name = 'daily_foucs'
-    db_station = ConnectSqlite()
-    sql = ConnectSqlite.build_sql(table_name, row_data, operate='insert')
-    db_station.insert_update_table(sql)
-    logger.info(sql)
-
-    pass
-
-    return HttpResponse(str(row_context))
-
-
 
 
 def part_info(request, lingjianhao):
@@ -213,6 +169,8 @@ def table_display_user(request, table_name='station'):
     :return:
     '''
 
+    focus_form = FocusForm()
+
     table_view_name = suffix_view(table_name)
     db_station = ConnectSqlite()
     df = db_station.read_table(table_view_name)
@@ -238,6 +196,7 @@ def table_display_user(request, table_name='station'):
                       'table_name_mingcheng': table_name_mingcheng,
                       'line_list': line_list,
                       'line_station_dict': line_station_dict,
+                      'focus_form': focus_form,
                   })
 
 

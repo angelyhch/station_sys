@@ -52,50 +52,68 @@ craft home
 </script>
 
     <div id="foucs_date_form" style="display:none" class="container">
-        <form class="layui-form" method="post" action=".">
+        <form class="layui-form" method="post" action="." id="id_focus_data_form">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">关注开始</label>
-                <div class="layui-input-block">
-                    <input id="input_daily_start" class="layui-input" type="date" name="daily_start" placeholder="请输入关注时间段的开始日期">
-                </div>
-            </div>
+            {% for field in focus_form %}
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">关注结束</label>
-                <div class="layui-input-block">
-                    <input id="input_daily_end" type="date" class="layui-input" name="daily_end" placeholder="请输入关注时间段的结束日期">
+                {% if field.name != 'focus_content' %}
+                <div class="layui-form-item">
+                    {{ field.label_tag() }}
+                    {{ field }}
                 </div>
-            </div>
+                {% endif %}
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">发布人</label>
-                <div class="layui-input-block">
-                    <input type="text" id="input_daily_faburen" class="layui-input" name="daily_fabufren" placeholder="请输入发布人姓名">
-                </div>
-            </div>
+            {% endfor %}
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">所属线体</label>
-                <div class="layui-input-block">
-                    <select name="line" id="input_daily_line" name="daily_line">
-                        <option value=""></option>
-                        {% for line in line_list %}
-                        <option value="{{ line }}">{{ line }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">关注工位</label>
-                <div class="layui-input-block">
-                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">
-                </div>
-            </div>
+<!--            {{ focus_form.as_p() }}-->
 
         </form>
+<!--        <form class="layui-form" method="post" action=".">-->
+<!--            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">-->
+<!---->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">关注开始</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                    <input id="input_daily_start" class="layui-input" type="date" name="daily_start" placeholder="请输入关注时间段的开始日期">-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">关注结束</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                    <input id="input_daily_end" type="date" class="layui-input" name="daily_end" placeholder="请输入关注时间段的结束日期">-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">发布人</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                    <input type="text" id="input_daily_faburen" class="layui-input" name="daily_fabufren" placeholder="请输入发布人姓名">-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">所属线体</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                    <select name="line" id="input_daily_line" name="daily_line">-->
+<!--                        <option value=""></option>-->
+<!--                        {% for line in line_list %}-->
+<!--                        <option value="{{ line }}">{{ line }}</option>-->
+<!--                        {% endfor %}-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">关注工位</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                    <input type="text" id="input_daily_station" class="layui-input" name="daily_station" placeholder="请输入关注工位">-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--        </form>-->
     </div>
 
     <div id="edit_row_form">
@@ -204,34 +222,36 @@ table.on('tool(demo)',function(obj){
 
     } else if(layEvent == 'foucs'){
         layer.msg('click foucs');
-        var foucs_data = {};
-        foucs_data['context'] = data;
-        foucs_data['table_name'] = "{{ table_name_mingcheng }}";
+<!--        var foucs_data = {};-->
+<!--        foucs_data['context'] = data;-->
+<!--        foucs_data['table_name'] = "{{ table_name_mingcheng }}";-->
+        var foucs_data = new FormData();
+        var js_data = JSON.stringify(data);
+        foucs_data.append('focus_content', js_data);
+        foucs_data.append('table_name', "{{ table_name_mingcheng }}")
 
         layer.open({
             type: 1,
             title: '编辑关注信息',
+            area: ['300px', '700px'],
             btn:['提交关注', '取消'],
             content: $("#foucs_date_form"),
 
             btn1: function(){
-                var foucs_data_daily_start = $("#input_daily_start").val();
-                var foucs_data_daily_end = $("#input_daily_end").val();
-                var foucs_data_daily_faburen = $("#input_daily_faburen").val();
-                var foucs_data_daily_station = $("#input_daily_station").val();
-                var foucs_data_daily_line = $("#input_daily_line").val();
-                foucs_data['daily_start'] = foucs_data_daily_start;
-                foucs_data['daily_end'] = foucs_data_daily_end;
-                foucs_data['daily_faburen'] = foucs_data_daily_faburen;
-                foucs_data['daily_station'] = foucs_data_daily_station;
-                foucs_data['daily_line'] = foucs_data_daily_line;
+
+                    var input_foucs_data = new FormData($("#id_focus_data_form")[0])
+                    for (let item of input_foucs_data.entries()) {
+                        foucs_data.append(item[0], item[1]);
+                    }
 
                 // btn内部运行ajax
                 $.ajax({
-<!--                    url:"{{ url('craft:foucs_add') }}",-->
                     url: "{{ url('daily_focus:record_add_focus') }}",
-                    data: JSON.stringify(foucs_data),
+                    data: foucs_data,
                     type: 'POST',
+
+                    contentType: false,
+                    processData: false,
 
                     success: function(result){
                         layer.close(layer.index);
