@@ -17,15 +17,46 @@ line_station_dict = apps.get_app_config('daily_focus').LINE_STATION_DICT
 line_list_choices = tuple(zip(line_list, line_list))
 
 
+class ClassGroup(models.Model):
+    name = models.CharField(verbose_name='班组名', max_length=300)
+
+    def __str__(self):
+        return self.name
+
+
+class Line(models.Model):
+    name = models.CharField(verbose_name='线体名', max_length=300)
+    class_name = models.ForeignKey(ClassGroup, on_delete=models.SET_NULL, null=True, related_name='lines')
+
+    def __str__(self):
+        return self.name
+
+
+    # chexing = models.ManyToManyField
+#
+#
+# class CheXing(models.Model):
+#     name = models.CharField(verbose_name='车型名', max_length=300)
+#     code = models.CharField(verbose_name='车型代码', max_length=300)
+
+
+class Station(models.Model):
+    name = models.CharField(verbose_name='工位编号', max_length=300)
+    mingcheng = models.CharField(verbose_name='工位名称', max_length=300)
+    line = models.ForeignKey(Line, verbose_name='线体', on_delete=models.SET_NULL, null=True, related_name='stations')
+
+    def __str__(self):
+        return self.name
+
+
 class Focus(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='focus')
-    line = models.CharField(verbose_name='线体', choices=line_list_choices, max_length=300)
-    station = models.CharField(verbose_name='工位', max_length=300,blank=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='focuses')
     focus_content = models.TextField(verbose_name='关注内容', blank=True)
     focus_start = models.DateField(verbose_name='关注开始')
     focus_end = models.DateField(verbose_name='关注结束')
     last_modify = models.DateTimeField(auto_now=True, db_index=True)
     created = models.DateField(auto_now_add=True, db_index=True)
+    station = models.ForeignKey(Station, verbose_name='工位', on_delete=models.SET_NULL, null=True, related_name='focuses')
 
     class Meta:
         ordering = ['-focus_end']
@@ -36,8 +67,8 @@ class Focus(models.Model):
 
 def user_directory_path(instance, filename):
     ext = filename.split('.', 1)[-1]
-    station = instance.focus.station
-    line = instance.focus.line
+    station = instance.focus.station.name
+    line = instance.focus.station.line.name
     filename = f'{time.strftime("%Y%m%d%H%M%S")}{uuid.uuid4().hex[:10]}.{ext}'
     return os.path.join('images/daily_focus/', line, station,  filename)
 
