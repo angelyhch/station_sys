@@ -18,7 +18,7 @@ def create_logger():
     sh.setFormatter(formatter)
     sh.setLevel(logging.DEBUG)
 
-    fh = logging.FileHandler(os.path.join(settings.BASE_DIR, 'logger.txt'))
+    fh = logging.FileHandler(os.path.join(settings.BASE_DIR, 'logger.log'))
     fh.setFormatter(formatter)
     fh.setLevel(logging.INFO)
 
