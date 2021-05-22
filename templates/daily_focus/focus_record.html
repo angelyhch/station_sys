@@ -5,6 +5,12 @@
 focus record
 {% endblock title %}
 
+{% block styles %}
+<style>
+
+</style>
+
+{% endblock styles %}
 
 {% block header %}
 {{ super() }}
@@ -25,7 +31,7 @@ focus record
 {% block sidebar %}
 <h3 class="text-center">每日确认</h3>
 
-<table class="table table-striped table-bordered ">
+<table class="table table-striped table-bordered " >
     <thead>
     <th>日期</th>
     <th>关注签名</th>
@@ -117,3 +123,17 @@ focus record
 </div>
 
 {% endblock content %}
+
+{% block scripts %}
+{{ super() }}
+
+
+<script>
+<!--    强调边框，便于打印-->
+    $(function(){
+        $('th, td').css('border', '2px solid');
+    })
+
+</script>
+
+{% endblock scripts %}
