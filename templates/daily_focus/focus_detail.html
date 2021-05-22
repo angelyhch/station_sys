@@ -8,43 +8,59 @@ upload focus
 {% block content %}
 
 <div class="container">
-
     <div class="row">
         <div class="col-md-12">
-            <button id="id_submit" class="btn btn-primary">更改确认提交</button>
             <button class="btn btn-primary"><a href="{{ url('daily_focus:focus_record', args=(focus.id,)) }}">打印跟踪单</a></button>
+        </div>
+    </div>
 
-            <form id="id_focus_form" class="layui-form" method="post" action="." enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12" style="float:left; padding:20; margin:20px; border:1px solid">
+            <form id="id_focus_form" class="layui-form" method="post" target="nm_iframe" action="." enctype="multipart/form-data">
                 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
-                {% for field in focus_form %} <br>
-                <div class="layui-form-item">
-                    {{ field.label_tag() }}
-                    {% if field.name == 'focus_start' or field.name == 'focus_end' %}
-                    <p>原值:{{ focus.__getattribute__(field.name) }}</p>
-                    {% endif %}
-                    {{ field }}
-                </div>
-                {% endfor %}
+                <ul>
+                    <li>
+                        <!--                target="nm_iframe"提交后不刷新页面，接着setTimeout 重新刷新页面-->
+                        <input class="btn btn-warning" type="submit" value="更改确认提交" onclick="setTimeout('location.reload();', 1000)">
+                    </li>
+
+                    <li >
+                        {% for field in focus_form %} <br>
+                        <div class="layui-form-item">
+                            {{ field.label_tag() }}
+                            {% if field.name == 'focus_start' or field.name == 'focus_end' %}
+                            <p>原值:{{ focus.__getattribute__(field.name) }}</p>
+                            {% endif %}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                    </li>
+
+                </ul>
+
             </form>
+            <iframe id=id_iframe" name="nm_iframe" style="display:none;"></iframe>
         </div>
     </div>
     <br>
     <br>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="float:left; padding:20; margin:20px; border:1px solid">
             <ul>
                 <li>
                     <button class="btn btn-warning" id="layer_id_upload_after_image_btn">跟进图片上传</button>
                 </li>
                 <li>
-                    <div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
+                    <div class="layer_photos_div" style="float:left; padding:20; margin:20px;">
                         {% for image in focus.after_images.all() %}
-                        <laber>
-                            <button class="btn btn-warning" onclick="delete_after_image(this);" onmouseenter="delete_tips(this);">id-{{ image.id }} <i class="bi bi-trash"></i></button>
-                            <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
-                        </laber>
+                        <div style="float:left;">
+                            <laber>
+                                <button class="btn btn-info" onclick="delete_after_image(this);" onmouseenter="delete_tips(this);">id-{{ image.id }} <i class="bi bi-trash"></i></button>
+                                <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
+                            </laber>
+                        </div>
                         {% endfor %}
                     </div>
                 </li>
@@ -53,18 +69,20 @@ upload focus
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12"  style="float:left; padding:20; margin:20px; border:1px solid">
             <ul>
                 <li>
                     <button class="btn btn-warning" id="layer_id_upload_image_btn">如有新图片，请上传</button>
                 </li>
                 <li>
-                    <div class="layer_photos_div" style="float:left; padding:20; margin:20px; border:1px solid">
+                    <div class="layer_photos_div"  style="float:left; padding:20; margin:20px; ">
                         {% for image in focus.images.all() %}
-                        <label>
-                            <button class="btn btn-warning" onclick="delete_image(this);" onmouseenter="delete_tips(this);">id-{{ image.id }} <i class="bi bi-trash"></i></button>
-                            <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
-                        </label>
+                        <div style="float:left">
+                            <label>
+                                <button class="btn btn-info" onclick="delete_image(this);" onmouseenter="delete_tips(this);">id-{{ image.id }} <i class="bi bi-trash"></i></button>
+                                <img src="{{ image.image.url }}" onclick="image_show(this)" width="200" height="200" alt="{{ focus.station }}">
+                            </label>
+                        </div>
                         {% endfor %}
                     </div>
                 </li>
