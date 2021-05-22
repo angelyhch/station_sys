@@ -10,7 +10,9 @@ upload focus
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <button class="btn btn-primary"><a href="{{ url('daily_focus:focus_record', args=(focus.id,)) }}">打印跟踪单</a></button>
+            <a href="{{ url('daily_focus:focus_record', args=(focus.id,)) }}">
+                <button class=""btn btn-primary">打印跟踪单</button></button>
+            </a>
         </div>
     </div>
 
