@@ -140,3 +140,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+/daily_focus/migrations/0001_initial.py
+/daily_focus/migrations/0002_auto_20210522_1618.py
+/daily_focus/migrations/0003_classgroup.py
+/daily_focus/migrations/0004_alter_line_class_name.py
+/daily_focus/migrations/0005_auto_20210522_1657.py
+/daily_focus/migrations/0006_alter_focus_station.py
