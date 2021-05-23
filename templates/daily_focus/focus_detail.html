@@ -11,7 +11,7 @@ upload focus
     <div class="row">
         <div class="col-md-12">
             <a href="{{ url('daily_focus:focus_record', args=(focus.id,)) }}">
-                <button class=""btn btn-primary">打印跟踪单</button></button>
+                <button class="btn btn-primary">打印跟踪单</button></button>
             </a>
         </div>
     </div>
@@ -31,9 +31,7 @@ upload focus
                         {% for field in focus_form %} <br>
                         <div class="layui-form-item">
                             {{ field.label_tag() }}
-                            {% if field.name == 'focus_start' or field.name == 'focus_end' %}
                             <p>原值:{{ focus.__getattribute__(field.name) }}</p>
-                            {% endif %}
                             {{ field }}
                         </div>
                         {% endfor %}

@@ -6,6 +6,10 @@ from django.apps import apps
 from django.core.mail import send_mail
 from craft.utils import ConnectSqlite
 from django.conf import settings
+import pandas as pd
+from daily_focus.models import Focus, Station, Line
+import datetime
+from django.contrib.auth.models import User
 
 #todo: 调用django自带sendmail未成功，用错误的密码和帐户也会正常返回1.不报错。
 def send_foucs_mail():
@@ -39,16 +43,35 @@ def send_mail_self():
         mail_from = apps.get_app_config('craft').EMAIL_FROM
         mail_to = apps.get_app_config('craft').EMAIL_TO
 
-        db = ConnectSqlite(settings.BASE_DIR / 'db.sqlite3')
-        df = db.read_table('daily_focus_focus_view')
+        todays_query_set = Focus.objects.filter(focus_end__gt=datetime.date.today()).order_by('focus_end')
+        df = pd.DataFrame(todays_query_set.values())
 
-        foucs_stations_list = df['关注工位'].to_list()
-        counts = len(foucs_stations_list)
+        focus_stations_list = [today.station.name for today in todays_query_set]
+        counts = len(focus_stations_list)
+
+        df['user'] = df.loc[:, 'user_id'].apply(lambda x: User.objects.get(id=x))
+        df['station'] = df.loc[:, 'station_id'].apply(lambda x: Station.objects.get(id=x))
+        df['line'] = df.loc[:, 'station_id'].apply(lambda x: Station.objects.get(id=x).line)
+
+        del df['user_id']
+        del df['station_id']
+        del df['created']
+        del df['last_modify']
+
+        replace_columns = {
+            'focus_content':'关注详情',
+            'focus_start': '关注开始',
+            'focus_end': '关注结束',
+            'user': '发布人',
+            'station': '工位',
+            'line': '线体',
+        }
+        df.rename(columns=replace_columns, inplace=True)
 
         message_content = ''''''
         message_content += f'<h2><a href="http://10.36.8.159:8000">今日关注</a>共<strong>{counts}</strong>项</h2>'
 
-        foucs_stations_string = ';'.join(foucs_stations_list)
+        foucs_stations_string = ';'.join(focus_stations_list)
         message_content += f'<p>涉及到工位有——【{foucs_stations_string}】<br> 详情如下表</p> <br>'
 
         message_content += df.to_html()
@@ -71,7 +94,6 @@ def send_mail_self():
 
     sender = apps.get_app_config('craft').EMAIL_FROM
     receivers = mail_to_address
-    # receivers = 'angelyhch@163.com'
 
     message = build_message()
 
