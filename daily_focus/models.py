@@ -4,6 +4,8 @@ from django.apps import apps
 import uuid
 import time
 import os
+from sorl import thumbnail
+
 import datetime
 import django
 # Create your models here.
@@ -69,14 +71,26 @@ def user_directory_path(instance, filename):
     ext = filename.split('.', 1)[-1]
     station = instance.focus.station.name
     line = instance.focus.station.line.name
-    filename = f'{time.strftime("%Y%m%d%H%M%S")}{uuid.uuid4().hex[:10]}.{ext}'
-    return os.path.join('images/daily_focus/', line, station,  filename)
+    name = f'{time.strftime("%Y%m%d%H%M%S")}{uuid.uuid4().hex[:10]}.{ext}'
+    return os.path.join('images/daily_focus/', line, station,  name)
+
+
+def user_directory_path_thumbnail(instance, filename):
+    ext = filename.split('.', 1)[-1]
+    station = instance.focus.station.name
+    line = instance.focus.station.line.name
+    name = f'{time.strftime("%Y%m%d%H%M%S")}{uuid.uuid4().hex[:10]}.{ext}'
+    return os.path.join('images_thumbnail/daily_focus/', line, station,  name)
 
 
 class FocusImage(models.Model):
     image = models.ImageField(upload_to=user_directory_path, blank=True)
     created = models.DateField(auto_now_add=True, db_index=True)
     focus = models.ForeignKey(Focus, on_delete=models.SET_NULL, null=True, related_name='images')
+    # image_thumbnail = models.ImageField(upload_to=user_directory_path_thumbnail, blank=True)
+
+    # def save(self, *args, **kwargs):
+
 
 
 class FocusAfterImage(models.Model):

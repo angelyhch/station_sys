@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'django_apscheduler',
-    # 'craft', #todo: 用下一行替换，实现app级别的配置在项目中可以调用, 通过 apps.get_app_config('craft').name 调用name内容。
+    'sorl.thumbnail',
     'craft.apps.CraftConfig',
     'account',
     'daily_focus.apps.DailyFocusConfig',

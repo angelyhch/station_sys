@@ -32,9 +32,10 @@ focus record
 <h3 class="text-center">每日确认</h3>
 
 <table class="table table-striped table-bordered " >
+
     <thead>
     <th>日期</th>
-    <th>关注签名</th>
+    <th>签名</th>
     </thead>
     <tbody>
     {% for day in focus_days %}
@@ -48,7 +49,24 @@ focus record
     </tr>
     {% endfor %}
     </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="2">
+            <p>
+                1、记录人：班组长或工程师；
+                <br>
+                2、确认内容，关注内容的执行情况和实物状态；
+                <br>
+                3、如有异常，及时纠正并记录；
+            </p>
+        </td>
+    </tr>
+    </tfoot>
+
 </table>
+<div>
+    <h3>异常记录：</h3>
+</div>
 
 {% endblock sidebar %}
 
@@ -71,7 +89,7 @@ focus record
                 <tr>
                     <td>{{ focus.focus_start }}</td>
                     <td>{{ focus.focus_end }}</td>
-                    <td>{{ focus.line }}</td>
+                    <td>{{ focus.station.line }}</td>
                     <td>{{ focus.station }}</td>
                 </tr>
                 </tbody>
