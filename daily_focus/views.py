@@ -13,6 +13,16 @@ import json
 def home(request):
     return render(request, 'daily_focus/home.html')
 
+
+def show_picture(request):
+    images = FocusImage.objects.all()
+    return render(request, 'daily_focus/show_picture.html',
+                  {
+                      'images': images,
+                  }
+                  )
+
+
 def focus_today(request):
     todays = Focus.objects.filter(focus_end__gt=datetime.date.today()).order_by("focus_end")
     focus_form = FocusForm()

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show image</title>
+</head>
+<body>
+    <h1>snapshots</h1>
+    <ul>
+        {% for image in images %}
+        <li>
+            <a href="{{ image.image.url }}" onclick="showPic(this); return false;">Picture-{{ loop.index }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <img id="placeholder" src="" alt="my image gallery">
+
+
+    <script>
+        function showPic(whichPic){
+            var source = whichPic.getAttribute("href");
+            var placeholder = document.getElementById("placeholder");
+
+            placeholder.setAttribute("src", source);
+
+        }
+
+    </script>
+
+</body>
+
+</html>

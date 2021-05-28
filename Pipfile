@@ -12,6 +12,7 @@ xlrd = "*"
 schedule = "*"
 django-apscheduler = "*"
 sorl-thumbnail = "*"
+pillow = "*"
 
 [dev-packages]
 

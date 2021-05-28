@@ -1,11 +1,15 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.apps import apps
-import uuid
-import time
 import os
-import datetime
-import django
+import time
+import uuid
+
+from django.apps import apps
+from django.contrib.auth.models import User
+from django.db import models
+
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
+
 # Create your models here.
 
 '''
@@ -31,8 +35,9 @@ class Line(models.Model):
     def __str__(self):
         return self.name
 
-
     # chexing = models.ManyToManyField
+
+
 #
 #
 # class CheXing(models.Model):
@@ -56,7 +61,8 @@ class Focus(models.Model):
     focus_end = models.DateField(verbose_name='关注结束')
     last_modify = models.DateTimeField(auto_now=True, db_index=True)
     created = models.DateField(auto_now_add=True, db_index=True)
-    station = models.ForeignKey(Station, verbose_name='工位', on_delete=models.SET_NULL, null=True, related_name='focuses')
+    station = models.ForeignKey(Station, verbose_name='工位', on_delete=models.SET_NULL, null=True,
+                                related_name='focuses')
 
     class Meta:
         ordering = ['-focus_end']
@@ -70,16 +76,79 @@ def user_directory_path(instance, filename):
     station = instance.focus.station.name
     line = instance.focus.station.line.name
     filename = f'{time.strftime("%Y%m%d%H%M%S")}{uuid.uuid4().hex[:10]}.{ext}'
-    return os.path.join('images/daily_focus/', line, station,  filename)
+    return os.path.join('images/daily_focus/', line, station, filename)
+
+
+def user_directory_path2(instance, filename):
+    ext = filename.split('.', 1)[-1]
+    station = instance.focus.station.name
+    line = instance.focus.station.line.name
+    filename = f'{time.strftime("%Y%m%d%H%M%S")}{uuid.uuid4().hex[:10]}.{ext}'
+    return os.path.join('images_thumbnail/daily_focus/', line, station, filename)
 
 
 class FocusImage(models.Model):
     image = models.ImageField(upload_to=user_directory_path, blank=True)
+    image_thumbnail = models.ImageField(upload_to=user_directory_path2, blank=True)
     created = models.DateField(auto_now_add=True, db_index=True)
     focus = models.ForeignKey(Focus, on_delete=models.SET_NULL, null=True, related_name='images')
+
+    def __init__(self, *args, **kwargs):
+        super(FocusImage, self).__init__(*args, **kwargs)
+        self.last_image = self.image.name
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        '''
+        重写save函数，每次保存时，自动保存thumbnail缩略图
+        :param force_insert:
+        :param force_update:
+        :param using:
+        :param update_fields:
+        :return:
+        '''
+
+        if self.image.name != self.last_image:  #如果image有变化，才进行缩略图更新。
+            self.image_thumbnail.delete()
+            img = Image.open(self.image.file)
+            img.thumbnail((200, 200))
+            img_byte = BytesIO()
+            img_ext = 'jpeg'
+            img.save(img_byte, img_ext)
+            self.image_thumbnail.save(self.image.name, File(img_byte), save=False)
+            self.last_image = self.image.name
+
+        super().save()
 
 
 class FocusAfterImage(models.Model):
     image = models.ImageField(upload_to=user_directory_path, blank=True)
+    image_thumbnail = models.ImageField(upload_to=user_directory_path2, blank=True)
     created = models.DateField(auto_now_add=True, db_index=True)
     focus = models.ForeignKey(Focus, on_delete=models.SET_NULL, null=True, related_name='after_images')
+
+    def __init__(self, *args, **kwargs):
+        super(FocusAfterImage, self).__init__(*args, **kwargs)
+        self.last_image = self.image.name
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        '''
+        重写save函数，每次保存时，自动保存thumbnail缩略图
+        :param force_insert:
+        :param force_update:
+        :param using:
+        :param update_fields:
+        :return:
+        '''
+        if self.image.name != self.last_image:  #如果image有变化，才进行缩略图更新。
+            self.image_thumbnail.delete()
+            img = Image.open(self.image.file)
+            img.thumbnail((200, 200))
+            img_byte = BytesIO()
+            img_ext = 'jpeg'
+            img.save(img_byte, img_ext)
+            self.image_thumbnail.save(self.image.name, File(img_byte), save=False)
+            self.last_image = self.image.name
+
+        super().save()

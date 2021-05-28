@@ -40,14 +40,14 @@ focus list
             <td>
                 <div>
                     {% for image in focus.images.all() %}
-                    <img src="{{ image.image.url }}" width="60" height="60" alt="{{ focus.station }}" onclick="image_show(this)">
+                    <img src="{{ image.image_thumbnail.url }}" layer-src="{{ image.image.url }}" alt="{{ focus.station }}" onclick="image_show(this)">
                     {% endfor %}
                 </div>
             </td>
             <td>
                 <div>
                     {% for image in focus.after_images.all() %}
-                    <img src="{{ image.image.url }}" width="60" height="60" alt="{{ focus.station }}" onclick="image_show(this)">
+                    <img src="{{ image.image_thumbnail.url }}" layer-src="{{ image.image.url }}" alt="{{ focus.station }}" onclick="image_show(this)">
                     {% endfor %}
                 </div>
             </td>

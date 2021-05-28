@@ -5,6 +5,7 @@ from daily_focus import views
 app_name = 'daily_focus'
 urlpatterns = [
     path('home/', views.home, name='home'),
+    path('show_picture/', views.show_picture, name='show_picture'),
     path('upload_focus/', views.upload_focus, name='upload_focus'),
     path('focus_list/', views.focus_list, name='focus_list'),
     path('focus_detail/<focus_id>/', views.focus_detail, name='focus_detail'),

@@ -13,10 +13,12 @@ def Focus_delete(instance, **kwargs):
 def image_delete(instance, **kwargs):
     logger.info(f'{instance.focus.user.username} delete id[{instance.id}]')
     instance.image.delete(False)
+    instance.image_thumbnail.delete(False)
 
 
 @receiver(pre_delete, sender=FocusAfterImage)
 def after_image_delete(instance, **kwargs):
     logger.info(f'{instance.focus.user.username} delete id[{instance.id}]')
     instance.image.delete(False)
+    instance.image_thumbnail.delete(False)
 
