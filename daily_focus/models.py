@@ -87,6 +87,17 @@ def user_directory_path2(instance, filename):
     return os.path.join('images_thumbnail/daily_focus/', line, station, filename)
 
 
+def create_thumbnail(instance):
+    instance.image_thumbnail.delete()
+    img = Image.open(instance.image.file)
+    img.thumbnail((200, 200))
+    img_byte = BytesIO()
+    img_ext = 'jpeg'
+    img.save(img_byte, img_ext)
+    instance.image_thumbnail.save(instance.image.name, File(img_byte), save=False)
+    instance.last_image = instance.image.name
+
+
 class FocusImage(models.Model):
     image = models.ImageField(upload_to=user_directory_path, blank=True)
     image_thumbnail = models.ImageField(upload_to=user_directory_path2, blank=True)
@@ -109,14 +120,7 @@ class FocusImage(models.Model):
         '''
 
         if self.image.name != self.last_image:  #如果image有变化，才进行缩略图更新。
-            self.image_thumbnail.delete()
-            img = Image.open(self.image.file)
-            img.thumbnail((200, 200))
-            img_byte = BytesIO()
-            img_ext = 'jpeg'
-            img.save(img_byte, img_ext)
-            self.image_thumbnail.save(self.image.name, File(img_byte), save=False)
-            self.last_image = self.image.name
+            create_thumbnail(self)
 
         super().save()
 
@@ -142,13 +146,6 @@ class FocusAfterImage(models.Model):
         :return:
         '''
         if self.image.name != self.last_image:  #如果image有变化，才进行缩略图更新。
-            self.image_thumbnail.delete()
-            img = Image.open(self.image.file)
-            img.thumbnail((200, 200))
-            img_byte = BytesIO()
-            img_ext = 'jpeg'
-            img.save(img_byte, img_ext)
-            self.image_thumbnail.save(self.image.name, File(img_byte), save=False)
-            self.last_image = self.image.name
+            create_thumbnail(self)
 
         super().save()
