@@ -18,7 +18,8 @@ focus list
         <th data-sortable="true">关注内容</th>
         <th data-sortable="true">关注开始</th>
         <th data-sortable="true">关注结束</th>
-        <th data-sortable="true">图片数量</th>
+        <th data-sortable="true">图片</th>
+        <th data-sortable="true">跟进图片</th>
         <th data-sortable="true">线体</th>
         <th data-sortable="true">工位</th>
         <th data-sortable="true">发布人</th>
@@ -31,13 +32,20 @@ focus list
             <td><a style="color:blue" href="{{ url('daily_focus:focus_detail', args=(focus.id,)) }}"> {{ focus.focus_content |filter_trim_quote }} <i class="bi bi-mouse2" ></i> </a></td>
             <td>{{ focus.focus_start }}</td>
             <td>{{ focus.focus_end }}</td>
-            {% if focus.images.count() > 0 %}
-                <td style="background-color:yellow">
-            {% else %}
-                <td>
-            {% endif %}
-                {{ focus.images.count() }}
-                </td>
+            <td>
+                <div>
+                    {% for image in focus.images.all() %}
+                    <img src="{{ image.image_thumbnail.url }}" layer-src="{{ image.image.url }}" alt="{{ focus.station }}" onclick="image_show(this)">
+                    {% endfor %}
+                </div>
+            </td>
+            <td>
+                <div>
+                    {% for image in focus.after_images.all() %}
+                    <img src="{{ image.image_thumbnail.url }}" layer-src="{{ image.image.url }}" alt="{{ focus.station }}" onclick="image_show(this)">
+                    {% endfor %}
+                </div>
+            </td>
             <td>{{ focus.station.line }}</td>
             <td>{{ focus.station }}</td>
             <td>{{ focus.user }}</td>
