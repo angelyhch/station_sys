@@ -29,44 +29,9 @@ focus record
 
 
 {% block sidebar %}
-<h3 class="text-center">每日确认</h3>
 
-<table class="table " >
 
-    <thead>
-    <th>日期</th>
-    <th>签名</th>
-    </thead>
-    <tbody>
-    {% for day in focus_days %}
-    <tr>
-        <td>
-            {{ day.strftime('%m月%d日') }}
-        </td>
-        <td>
 
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-    <tfoot>
-    <tr>
-        <td colspan="2">
-            <p>
-                1、记录人：班组长或工程师；
-                <br>
-                2、确认内容，关注内容的执行情况和实物状态；
-                <br>
-                3、如有异常，及时纠正并记录；
-            </p>
-        </td>
-    </tr>
-    </tfoot>
-
-</table>
-<div>
-    <h3>异常记录：</h3>
-</div>
 
 {% endblock sidebar %}
 
@@ -106,7 +71,7 @@ focus record
                 <tbody>
                 <tr>
                     <td>
-                        <textarea name="tips" id="id_tips" cols="150" rows="15"></textarea>
+                        <textarea name="tips" id="id_tips" cols="120" rows="15"></textarea>
                     </td>
                 </tr>
                 </tbody>
@@ -138,6 +103,46 @@ focus record
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12">
+
+            <h3 class="text-center">每日确认</h3>
+            <table class="table " >
+                <thead>
+                <th>日期</th>
+                <th>签名(备注说明中指定人员)</th>
+                <th>异常记录</th>
+                </thead>
+                <tbody>
+                {% for day in focus_days %}
+                <tr>
+                    <td>
+                        {{ day.strftime('%m月%d日') }}
+                    </td>
+                    <td>
+                    </td>
+                    <td class="noborder_td">
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <p>
+                            1、记录人：班组长或工程师；
+                            <br>
+                            2、确认内容，关注内容的执行情况和实物状态；
+                            <br>
+                            3、如有异常，及时纠正并记录；
+                        </p>
+                    </td>
+                </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
